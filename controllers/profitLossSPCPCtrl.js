@@ -1,7 +1,7 @@
 const { isValidObjectId } = require("mongoose");
 const productSPCP_ProfitLossCalcModel = require("../models/productWiseProfithistoryModel");
 
-// ========== Create record ============
+// ========== Create record ================
 exports.createProfitHistory = async (req, res) => {
   try {
     const platformId = req.params.platformId;
@@ -26,6 +26,9 @@ exports.createProfitHistory = async (req, res) => {
       });
     }
 
+    req.body.userId = req.user._id
+
+
     const saveData = await productSPCP_ProfitLossCalcModel.create({
       ...req.body,
       platformId,
@@ -37,7 +40,7 @@ exports.createProfitHistory = async (req, res) => {
   }
 };
 
-//=============== Update record =====
+//=============== Update record ============
 exports.updateProfitHistory = async (req, res) => {
   try {
     const { id } = req.body;
@@ -50,6 +53,7 @@ exports.updateProfitHistory = async (req, res) => {
 
     const updated = await productSPCP_ProfitLossCalcModel.findByIdAndUpdate(
       id,
+      req.user._id,
       { $set: req.body },
       { new: true }
     );
@@ -66,7 +70,7 @@ exports.updateProfitHistory = async (req, res) => {
   }
 };
 
-// ============== get All by Platform Id ==========
+// ========== get All by Platform Id =======
 exports.getAllProfitHistory = async (req, res) => {
   try {
     const platformId = req.params.platformId;
@@ -79,7 +83,7 @@ exports.getAllProfitHistory = async (req, res) => {
     const getAll = await productSPCP_ProfitLossCalcModel.find({
       userId: req.user._id,
       platformId: platformId,
-    });
+    }).sort({createdAt:-1});
 
     return res.status(200).json({ status: true, data: getAll });
   } catch (err) {
@@ -87,7 +91,7 @@ exports.getAllProfitHistory = async (req, res) => {
   }
 };
 
-// =================== delete =====================
+// ============= delete ====================
 
 exports.deleteProfitHistory = async (req, res) => {
   try {

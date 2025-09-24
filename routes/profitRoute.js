@@ -9,14 +9,14 @@ const { authentication } = require("../middi/userAuth");
 
 const router = express.Router();
 
-router.route("/create/profit-history/:platformId").post(createProfitHistory);
+router.route("/create/profit-history/:platformId").post(authentication,createProfitHistory);
 
-router.route("/update/ProfitHistory").put(updateProfitHistory);
+router.route("/update/ProfitHistory").put(authentication,updateProfitHistory);
 
 router.route("/getAll/ProfitHistory").get(authentication, getAllProfitHistory);
 
 router
   .route("/delete/ProfitHistory")
   .delete(authentication, deleteProfitHistory);
-
+ 
 module.exports = router;
