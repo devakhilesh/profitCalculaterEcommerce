@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Selling Price Calculator</title>
+  <style>
+    :root{font-family:Inter,Segoe UI,Roboto,Arial;background:#f6f8fb;color:#0f172a}
+    body{margin:0;padding:28px;box-sizing:border-box}
+    .container{max-width:1100px;margin:0 auto;background:white;border-radius:12px;box-shadow:0 8px 30px rgba(12,15,25,0.08);padding:22px}
+    h1{font-size:20px;margin:0 0 14px}
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    label{display:block;font-size:13px;color:#334155;margin-bottom:6px}
+    input[type=number], input[type=text]{width:100%;padding:10px;border:1px solid #e6eef8;border-radius:8px;font-size:14px}
+    .full{grid-column:1/-1}
+    .section{border:1px dashed #e6eef8;padding:12px;border-radius:10px;background:#fcfdff}
+    .actions{display:flex;gap:10px;align-items:center;margin-top:12px}
+    button{background:#0ea5a4;color:white;padding:10px 14px;border-radius:8px;border:0;cursor:pointer}
+    button.secondary{background:#f97316}
+    .result{margin-top:14px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .card{background:#fff;border-radius:10px;padding:12px;box-shadow:0 4px 18px rgba(12,15,25,0.04);min-height:70px}
+    .k{font-size:12px;color:#64748b}
+    .v{font-size:16px;font-weight:600}
+    pre{background:#0b1220;color:#e6f1ff;padding:12px;border-radius:8px;overflow:auto}
+    footer{font-size:13px;color:#64748b;margin-top:12px}
+    @media(max-width:880px){.grid{grid-template-columns:1fr}.result{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Selling Price Calculator — Detailed Breakdown</h1>
+    <p class="k">Fill inputs (defaults provided). Click <strong>Calculate</strong> to see step-by-step expenses and final selling price.</p>
+
+    <form id="calcForm">
+      <div class="grid">
+        <!-- left column inputs -->
+        <div>
+          <label>Dispatch (total orders)</label>
+          <input id="dispatch" type="number" min="0" step="1" value="100" required />
+        </div>
+
+        <div>
+          <label>Cost Price (purchase with GST)</label>
+          <input id="costPrice" type="number" min="0" step="0.01" value="150" required />
+        </div>
+
+        <div>
+          <label>RTO % (Return to Origin)</label>
+          <input id="RTO_percent" type="number" min="0" step="0.01" value="15" />
+        </div>
+
+        <div>
+          <label>DTO % (Damage/Transit Problems)</label>
+          <input id="DTO_percent" type="number" min="0" step="0.01" value="15" />
+        </div>
+
+        <div>
+          <label>Meesho Return Charge (per return, with GST)</label>
+          <input id="meesho_return_charge" type="number" min="0" step="0.01" value="175" />
+        </div>
+
+        <div>
+          <label>Ads (total with GST)</label>
+          <input id="ads_withGst" type="number" min="0" step="0.01" value="590" />
+        </div>
+
+        <div>
+          <label>Wrong/Damaged % (lost items)</label>
+          <input id="wrong_damage_percent" type="number" min="0" step="0.01" value="5" />
+        </div>
+
+        <div>
+          <label>Packaging expense (per order)</label>
+          <input id="perOrderPckExpense" type="number" min="0" step="0.01" value="5" />
+        </div>
+
+        <div>
+          <label>Shipping GST per order</label>
+          <input id="shipping_Gst_per_order" type="number" min="0" step="0.01" value="13" />
+        </div>
+
+        <div>
+          <label>Desired Profit per dispatched order (amount)</label>
+          <input id="profit" type="number" min="0" step="0.01" value="20" />
+        </div>
+
+        <div class="full">
+          <div class="actions">
+            <button type="button" id="calculateBtn">Calculate</button>
+            <button type="button" id="copyJson">Copy JSON</button>
+            <button type="button" id="downloadJson" class="secondary">Download JSON</button>
+            <button type="reset">Reset</button>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div class="result" id="resultsArea">
+      <!-- populated by JS -->
+    </div>
+
+    <section style="margin-top:12px">
+      <h3 style="margin:0 0 8px">Raw detailed output (JSON)</h3>
+      <pre id="jsonOut">{}</pre>
+    </section>
+
+    <footer>Notes: All amounts shown are per paid order unless labeled. If <em>Orders to be paid</em> equals zero, some per-order values will be shown as <strong>0</strong> to avoid division errors.</footer>
+  </div>
+
+  <script>
+    // Utility: safe toFixed -> Number
+    function nf(v){return Number(Number(v || 0).toFixed(2))}
+
+    function calculate(data){
+      //======================== Return Expense ========================
+      const retExp = {};
+      const dis = Number(data.dispatch || 0);
+      const rtoPer = Number(data.RTO_percent || 0);
+      const dtoPer = Number(data.DTO_percent || 0);
+      const mRC = Number(data.meesho_return_charge || 0);
+
+      retExp.totalDispatchOrder = dis;
+      retExp.rtoPer = rtoPer;
+      retExp.rtoNorm = nf((dis * rtoPer) / 100);
+
+      // total delivered orders after RTO
+      const totalDelivered = nf(dis - retExp.rtoNorm);
+      retExp.totalDelivered = totalDelivered;
+
+      retExp.dtoPer = dtoPer;
+      retExp.dtoNorm = nf((totalDelivered * dtoPer) / 100);
+
+      // orders that will actually be paid (dispatched - rto - dto)
+      const ordersToBePaid = nf(dis - retExp.rtoNorm - retExp.dtoNorm);
+      retExp.ordersToBePaid = ordersToBePaid;
+
+      retExp.messhoReturnCost = mRC;
+      retExp.totalReturnAmount = nf(retExp.dtoNorm * mRC);
+
+      const return_Exp_per_Order = ordersToBePaid > 0 ? nf(retExp.totalReturnAmount / ordersToBePaid) : 0;
+      retExp.return_Exp_per_Order = return_Exp_per_Order;
+
+      //======================== Advertisement ========================
+      const adsExp = {};
+      adsExp.ordersToBePaid = ordersToBePaid;
+      adsExp.ads_withGst = Number(data.ads_withGst || 0);
+      const perOrderAdsExp = ordersToBePaid > 0 ? nf(adsExp.ads_withGst / ordersToBePaid) : 0;
+      adsExp.perOrderAdsExp = perOrderAdsExp;
+
+      //======================== Wrong Damage =========================
+      const wrongDamage = {};
+      wrongDamage.totalDispatchOrder = dis;
+      wrongDamage.wrong_damage_percent = Number(data.wrong_damage_percent || 0);
+      wrongDamage.wrong_damage_Norm = nf((dis * wrongDamage.wrong_damage_percent) / 100);
+
+      const costPrice = Number(data.costPrice || 0);
+      const perOrderWrongDamageAmount = ordersToBePaid > 0 ? nf((wrongDamage.wrong_damage_Norm * costPrice) / ordersToBePaid) : 0;
+      wrongDamage.perOrderWrongDamageAmount = perOrderWrongDamageAmount;
+
+      //======================== Packaging Expense ===================
+      const pckExp = {};
+      pckExp.perOrderPckExpense = Number(data.perOrderPckExpense || 0);
+      const totalPckExpense = nf(dis * pckExp.perOrderPckExpense);
+      pckExp.totalPckExpense = totalPckExpense;
+      const perOrderToBePaidPckExp = ordersToBePaid > 0 ? nf(totalPckExpense / ordersToBePaid) : 0;
+      pckExp.perOrderToBePaidPckExp = perOrderToBePaidPckExp;
+
+      //======================== Final Calculation ===================
+      const finalCalculation = {};
+      finalCalculation.purchaseWithGst = costPrice;
+      finalCalculation.pckExpense = perOrderToBePaidPckExp;
+      finalCalculation.returnCharge = return_Exp_per_Order;
+      finalCalculation.adsExpense = perOrderAdsExp;
+      finalCalculation.shipping_Gst_per_order = Number(data.shipping_Gst_per_order || 0);
+      finalCalculation.wrongDamage = perOrderWrongDamageAmount;
+
+      const totalCost = nf(
+        costPrice +
+        perOrderToBePaidPckExp +
+        return_Exp_per_Order +
+        perOrderAdsExp +
+        finalCalculation.shipping_Gst_per_order +
+        perOrderWrongDamageAmount
+      );
+      finalCalculation.totalCost = totalCost;
+
+      finalCalculation.profit = Number(data.profit || 0);
+
+      const desiredProfitDistributionOnPaidOrders = ordersToBePaid > 0 ? nf((dis * Number(data.profit || 0)) / ordersToBePaid) : 0;
+      finalCalculation.desiredProfitDistributionOnPaidOrders = desiredProfitDistributionOnPaidOrders;
+
+      finalCalculation.messhoPrice = nf(totalCost + desiredProfitDistributionOnPaidOrders);
+
+      // Consolidated output
+      return {
+        inputs: data,
+        retExp,
+        adsExp,
+        wrongDamage,
+        pckExp,
+        finalCalculation
+      };
+    }
+
+    // UI: render results
+    function renderOutput(out){
+      const area = document.getElementById('resultsArea');
+      area.innerHTML = '';
+
+      // small helper to create cards
+      function card(title, rows){
+        const wrap = document.createElement('div');
+        wrap.className = 'card';
+        const t = document.createElement('div'); t.className='k'; t.textContent = title; wrap.appendChild(t);
+        const dl = document.createElement('div'); dl.style.marginTop='8px';
+        rows.forEach(r=>{
+          const row = document.createElement('div'); row.style.display='flex'; row.style.justifyContent='space-between'; row.style.marginBottom='6px';
+          const k = document.createElement('div'); k.textContent = r.k; k.style.fontSize='13px'; k.style.color='#475569';
+          const v = document.createElement('div'); v.textContent = (typeof r.v === 'number') ? r.v.toFixed(2) : r.v; v.style.fontWeight='600';
+          row.appendChild(k); row.appendChild(v); dl.appendChild(row);
+        });
+        wrap.appendChild(dl);
+        return wrap;
+      }
+
+      // Return Expense card
+      area.appendChild(card('Return Expense', [
+        {k:'Total Dispatched Orders', v: out.retExp.totalDispatchOrder},
+        {k:'RTO %', v: out.retExp.rtoPer},
+        {k:'Orders lost to RTO', v: out.retExp.rtoNorm},
+        {k:'Delivered after RTO', v: out.retExp.totalDelivered},
+        {k:'DTO %', v: out.retExp.dtoPer},
+        {k:'Orders lost to DTO', v: out.retExp.dtoNorm},
+        {k:'Orders to be Paid', v: out.retExp.ordersToBePaid},
+        {k:'Total Return Amount (DTO * return charge)', v: out.retExp.totalReturnAmount},
+        {k:'Return Expense per Paid Order', v: out.retExp.return_Exp_per_Order}
+      ]));
+
+      // Advertisement card
+      area.appendChild(card('Advertisement', [
+        {k:'Total Ads (with GST)', v: out.adsExp.ads_withGst},
+        {k:'Ads per Paid Order', v: out.adsExp.perOrderAdsExp}
+      ]));
+
+      // Wrong Damage card
+      area.appendChild(card('Wrong/Damaged Items', [
+        {k:'Wrong Damage %', v: out.wrongDamage.wrong_damage_percent},
+        {k:'Count of Wrong Items', v: out.wrongDamage.wrong_damage_Norm},
+        {k:'Per Paid Order Wrong Damage Amount', v: out.wrongDamage.perOrderWrongDamageAmount}
+      ]));
+
+      // Packaging card
+      area.appendChild(card('Packaging', [
+        {k:'Packaging per Dispatched Order', v: out.pckExp.perOrderPckExpense},
+        {k:'Total Packaging Expense', v: out.pckExp.totalPckExpense},
+        {k:'Packaging per Paid Order', v: out.pckExp.perOrderToBePaidPckExp}
+      ]));
+
+      // Final Calculation card
+      area.appendChild(card('Final Calculation / Price', [
+        {k:'Purchase with GST (per unit)', v: out.finalCalculation.purchaseWithGst},
+        {k:'Total Cost per Paid Order (sum of expenses)', v: out.finalCalculation.totalCost},
+        {k:'Desired profit (per dispatched order) set in input', v: out.finalCalculation.profit},
+        {k:'Distributed profit per Paid Order', v: out.finalCalculation.desiredProfitDistributionOnPaidOrders},
+        {k:'Final Selling Price (messhoPrice)', v: out.finalCalculation.messhoPrice}
+      ]));
+
+      // show JSON
+      document.getElementById('jsonOut').textContent = JSON.stringify(out, null, 2);
+    }
+
+    // Event wiring
+    document.getElementById('calculateBtn').addEventListener('click', ()=>{
+      const data = {
+        dispatch: Number(document.getElementById('dispatch').value || 0),
+        RTO_percent: Number(document.getElementById('RTO_percent').value || 0),
+        DTO_percent: Number(document.getElementById('DTO_percent').value || 0),
+        meesho_return_charge: Number(document.getElementById('meesho_return_charge').value || 0),
+        ads_withGst: Number(document.getElementById('ads_withGst').value || 0),
+        wrong_damage_percent: Number(document.getElementById('wrong_damage_percent').value || 0),
+        perOrderPckExpense: Number(document.getElementById('perOrderPckExpense').value || 0),
+        shipping_Gst_per_order: Number(document.getElementById('shipping_Gst_per_order').value || 0),
+        costPrice: Number(document.getElementById('costPrice').value || 0),
+        profit: Number(document.getElementById('profit').value || 0)
+      };
+
+      const out = calculate(data);
+      renderOutput(out);
+      // store for copy/download
+      window._lastOutput = out;
+    });
+
+    document.getElementById('copyJson').addEventListener('click', ()=>{
+      if(!window._lastOutput){alert('Please calculate first');return}
+      navigator.clipboard.writeText(JSON.stringify(window._lastOutput, null, 2)).then(()=>{
+        alert('JSON copied to clipboard');
+      }, ()=>alert('Copy failed'));
+    });
+
+    document.getElementById('downloadJson').addEventListener('click', ()=>{
+      if(!window._lastOutput){alert('Please calculate first');return}
+      const blob = new Blob([JSON.stringify(window._lastOutput, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'selling_price_calc.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    });
+
+    // auto-calc on first load
+    document.getElementById('calculateBtn').click();
+  </script>
+</body>
+</html>
