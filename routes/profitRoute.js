@@ -30,10 +30,10 @@ router.route("/create/sellingCalcHistory/:platformId").post(authentication,creat
 
 router.route("/update/sellingCalcHistory/:sellingHistoryId").put(authentication,updateSellingHistory);
 
-router.route("/getAll/sellingHistory/:platformId").get(authentication, getAllSellingHistory);
+router.route("/getAll/sellingCalcHistory/:platformId").get(authentication, getAllSellingHistory);
 
 router
-  .route("/delete/sellingHistory/:id")
+  .route("/delete/sellingCalcHistory/:id")
   .delete(authentication, deleteSellingHistory);
 
 

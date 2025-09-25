@@ -163,8 +163,8 @@ exports.updateSellingHistory = async (req, res) => {
     }
 
     const updated = await SellingPriceCalculationModel.findOneAndUpdate(
-      sellingHistoryId,
-      req.user._id,
+     { _id:sellingHistoryId,
+      userId:req.user._id},
       { $set: req.body },
       { new: true }
     );
@@ -215,7 +215,9 @@ exports.deleteSellingHistory = async (req, res) => {
     }
 
     const deleted = await SellingPriceCalculationModel.findByIdAndDelete(id);
-
+if(!deleted){
+  return res.status(404).json({ status: false, data: "data not found" })
+}
     return res.status(200).json({ status: true, data: deleted });
   } catch (err) {
     return res.status(500).json({ status: false, message: err.message });
