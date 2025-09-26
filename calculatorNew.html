@@ -209,10 +209,10 @@
         </div>
 
         <div class="row">
-          <div>
+          <!-- <div>
             <label for="roundToNearest">Round To Nearest (₹)</label>
             <input id="roundToNearest" type="number" step="1" min="1" value="10" />
-          </div>
+          </div> -->
           <div style="align-self:end;">
             <div class="controls">
               <button id="calc" type="button">Calculate</button>
@@ -259,12 +259,12 @@
         </div>
       </div>
 
-      <div class="result-row big" style="background: linear-gradient(180deg, rgba(16,185,129,0.08), rgba(16,185,129,0.02)); border-color: rgba(16,185,129,0.10);">
+      <!-- <div class="result-row big" style="background: linear-gradient(180deg, rgba(16,185,129,0.08), rgba(16,185,129,0.02)); border-color: rgba(16,185,129,0.10);">
         <div>
           <div style="font-size:12px;color:var(--muted);font-weight:600;margin-bottom:6px;">Suggested Selling Price (rounded)</div>
           <div id="suggestedPrice" style="font-size:24px;color:#dffcf1;">—</div>
         </div>
-      </div>
+      </div> -->
 
       <div class="muted-note">Values are recalculated when you press <strong>Calculate</strong>. Console logs the full object for debug.</div>
     </div>
@@ -283,7 +283,7 @@
       rtoRiskCost: 35,
       dtoRiskCost: 160,
       desiredProfit: 60,
-      roundToNearest: 10,
+      roundToNearest: 0,
     };
 
     // Helpers to read inputs
@@ -353,8 +353,8 @@ console.log("dtoCalcuPer", dtoCalcuPer)
 
       sellingPriceCalculator.RoundToNearest = data.roundToNearest;
 
-      sellingPriceCalculator.SuggestedSellingPrice =
-        Math.ceil(sellingPriceCalculator.FinalSellingPrice / sellingPriceCalculator.RoundToNearest) * sellingPriceCalculator.RoundToNearest;
+    //   sellingPriceCalculator.SuggestedSellingPrice =
+    //     Math.ceil(sellingPriceCalculator.FinalSellingPrice / sellingPriceCalculator.RoundToNearest) * sellingPriceCalculator.RoundToNearest;
 
       // Render outputs
       document.getElementById("totalFixed").textContent = format(sellingPriceCalculator.TotalFixedCost);
@@ -363,7 +363,7 @@ console.log("dtoCalcuPer", dtoCalcuPer)
       document.getElementById("totalRisk").textContent = format(sellingPriceCalculator.totalRiskCost);
       document.getElementById("profitValue").textContent = format(sellingPriceCalculator.desiredProfit);
       document.getElementById("finalPrice").textContent = format(sellingPriceCalculator.FinalSellingPrice);
-      document.getElementById("suggestedPrice").textContent = format(sellingPriceCalculator.SuggestedSellingPrice);
+    //   document.getElementById("suggestedPrice").textContent = format(sellingPriceCalculator.SuggestedSellingPrice);
 
       // Log full object (matches the user-provided structure)
       console.log("Selling_Price_Calculator", sellingPriceCalculator);
@@ -382,7 +382,7 @@ console.log("dtoCalcuPer", dtoCalcuPer)
       document.getElementById("dtoPercent").value = defaultData.dtoPercent;
       document.getElementById("dtoRiskCost").value = defaultData.dtoRiskCost;
       document.getElementById("desiredProfit").value = defaultData.desiredProfit;
-      document.getElementById("roundToNearest").value = defaultData.roundToNearest;
+    //   document.getElementById("roundToNearest").value = defaultData.roundToNearest;
       computeAndRender();
     }
 
