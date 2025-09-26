@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Selling Price Calculator</title>
+  <style>
+    :root {
+      --bg: #0f1724;
+      --card: #0b1220;
+      --muted: #94a3b8;
+      --accent: #06b6d4;
+      --glass: rgba(255,255,255,0.03);
+      --success: #10b981;
+      --danger: #ef4444;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg,#071024 0%, #071f2a 100%);
+      color: #e6eef6;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 960px;
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 20px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.04);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(2,6,23,0.6);
+    }
+
+    h1 {
+      margin: 0 0 8px 0;
+      font-size: 20px;
+      letter-spacing: -0.2px;
+    }
+    p.lead {
+      margin: 0 0 18px 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    form .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.04);
+      background: var(--glass);
+      color: #e6eef6;
+      font-size: 14px;
+      outline: none;
+    }
+    input[type="number"]:focus {
+      box-shadow: 0 0 0 4px rgba(6,182,212,0.06);
+      border-color: rgba(6,182,212,0.25);
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    button {
+      cursor: pointer;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    button#calc {
+      background: linear-gradient(90deg, var(--accent), #04a7c0);
+      color: #052022;
+    }
+    button#reset {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.04);
+      color: var(--muted);
+    }
+
+    /* Results column */
+    .results {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.01);
+      border: 1px solid rgba(255,255,255,0.02);
+    }
+    .result-row .label { color: var(--muted); font-size: 13px; }
+    .result-row .value { font-weight: 700; font-size: 16px; }
+
+    .big {
+      font-size: 22px;
+      font-weight: 800;
+      text-align: center;
+      padding: 18px;
+      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(6,182,212,0.08), rgba(6,182,212,0.03));
+      color: #eafcff;
+      border: 1px solid rgba(6,182,212,0.15);
+    }
+
+    .muted-note { color: var(--muted); font-size: 13px; text-align: center; margin-top: 8px; }
+
+    footer { text-align: center; color: var(--muted); font-size: 12px; margin-top: 12px; }
+
+    @media (max-width: 880px) {
+      .container { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>Selling Price Calculator</h1>
+      <p class="lead">Enter values below (defaults come from your example). Click <strong>Calculate</strong> to compute the breakdown and suggested selling price (rounded to nearest).</p>
+
+      <form id="calcForm" onsubmit="return false;">
+        <div class="row">
+          <div>
+            <label for="productCost">Product Cost (₹)</label>
+            <input id="productCost" type="number" step="0.01" min="0" value="200" />
+          </div>
+          <div>
+            <label for="packaging">Packaging (₹)</label>
+            <input id="packaging" type="number" step="0.01" min="0" value="25" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="ads">Ads (₹)</label>
+            <input id="ads" type="number" step="0.01" min="0" value="40" />
+          </div>
+          <div>
+            <label for="shipping">Shipping (₹)</label>
+            <input id="shipping" type="number" step="0.01" min="0" value="70" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="overhead">Overhead (₹)</label>
+            <input id="overhead" type="number" step="0.01" min="0" value="10" />
+          </div>
+          <div>
+            <label for="desiredProfit">Desired Profit (₹)</label>
+            <input id="desiredProfit" type="number" step="0.01" min="0" value="60" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="rtoPercent">RTO Percent (%)</label>
+            <input id="rtoPercent" type="number" step="0.01" min="0" value="15" />
+          </div>
+          <div>
+            <label for="rtoRiskCost">RTO Risk Cost (base ₹)</label>
+            <input id="rtoRiskCost" type="number" step="0.01" min="0" value="35" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="dtoPercent">DTO Percent (%)</label>
+            <input id="dtoPercent" type="number" step="0.01" min="0" value="8.5" />
+          </div>
+          <div>
+            <label for="dtoRiskCost">DTO Risk Cost (base ₹)</label>
+            <input id="dtoRiskCost" type="number" step="0.01" min="0" value="160" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="roundToNearest">Round To Nearest (₹)</label>
+            <input id="roundToNearest" type="number" step="1" min="1" value="10" />
+          </div>
+          <div style="align-self:end;">
+            <div class="controls">
+              <button id="calc" type="button">Calculate</button>
+              <button id="reset" type="button">Reset</button>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <div class="muted-note">Tip: change any number and press Calculate. Fields accept decimals.</div>
+      <footer>Calculator logic: Fixed costs + risk costs + desired profit = final selling price. Suggested selling price = ceil(final / roundToNearest) × roundToNearest.</footer>
+    </div>
+
+    <div class="card results">
+      <div class="result-row">
+        <div class="label">Total Fixed Cost</div>
+        <div class="value" id="totalFixed">—</div>
+      </div>
+
+      <div class="result-row">
+        <div class="label">RTO Norm (rtoRiskCost × rtoPercent / 100)</div>
+        <div class="value" id="rtoNorm">—</div>
+      </div>
+
+      <div class="result-row">
+        <div class="label">DTO Norm (dtoRiskCost × dtoPercent / 100)</div>
+        <div class="value" id="dtoNorm">—</div>
+      </div>
+
+      <div class="result-row">
+        <div class="label">Total Risk Cost (RTO + DTO)</div>
+        <div class="value" id="totalRisk">—</div>
+      </div>
+
+      <div class="result-row">
+        <div class="label">Desired Profit</div>
+        <div class="value" id="profitValue">—</div>
+      </div>
+
+      <div class="result-row big" style="margin-top:6px;">
+        <div>
+          <div style="font-size:12px;color:var(--muted);font-weight:600;margin-bottom:6px;">Final Selling Price (exact)</div>
+          <div id="finalPrice" style="font-size:20px;">—</div>
+        </div>
+      </div>
+
+      <div class="result-row big" style="background: linear-gradient(180deg, rgba(16,185,129,0.08), rgba(16,185,129,0.02)); border-color: rgba(16,185,129,0.10);">
+        <div>
+          <div style="font-size:12px;color:var(--muted);font-weight:600;margin-bottom:6px;">Suggested Selling Price (rounded)</div>
+          <div id="suggestedPrice" style="font-size:24px;color:#dffcf1;">—</div>
+        </div>
+      </div>
+
+      <div class="muted-note">Values are recalculated when you press <strong>Calculate</strong>. Console logs the full object for debug.</div>
+    </div>
+  </div>
+
+  <script>
+    // Default data object (as provided by the user)
+    const defaultData = {
+      productCost: 200,
+      packaging: 25,
+      ads: 40,
+      shipping: 70,
+      overhead: 10,
+      rtoPercent: 15,
+      dtoPercent: 8.5,
+      rtoRiskCost: 35,
+      dtoRiskCost: 160,
+      desiredProfit: 60,
+      roundToNearest: 10,
+    };
+
+    // Helpers to read inputs
+    function num(id) {
+      const el = document.getElementById(id);
+      return el ? Number(el.value || 0) : 0;
+    }
+
+    function format(n) {
+      if (Number.isFinite(n)) return "₹" + Number(n).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      return "—";
+    }
+
+    // Main compute
+    function computeAndRender() {
+      const data = {
+        productCost: num("productCost"),
+        packaging: num("packaging"),
+        ads: num("ads"),
+        shipping: num("shipping"),
+        overhead: num("overhead"),
+        rtoPercent: num("rtoPercent"),
+        dtoPercent: num("dtoPercent"),
+        rtoRiskCost: num("rtoRiskCost"),
+        dtoRiskCost: num("dtoRiskCost"),
+        desiredProfit: num("desiredProfit"),
+        roundToNearest: Math.max(1, Math.round(num("roundToNearest") || defaultData.roundToNearest)),
+      };
+
+      const sellingPriceCalculator = {};
+
+      sellingPriceCalculator.ProductCost = data.productCost;
+      sellingPriceCalculator.Packaging = data.packaging;
+      sellingPriceCalculator.Ads = data.ads;
+      sellingPriceCalculator.Shipping = data.shipping;
+      sellingPriceCalculator.Overhead = data.overhead;
+      sellingPriceCalculator.TotalFixedCost =
+        Number((data.productCost + data.packaging + data.ads + data.shipping + data.overhead).toFixed(2));
+
+      sellingPriceCalculator.RTORiskPercent = data.rtoPercent;
+      sellingPriceCalculator.RTORiskCost = data.rtoRiskCost;
+      sellingPriceCalculator.RTONorm = Number(((data.rtoRiskCost * data.rtoPercent) / 100).toFixed(2));
+
+      sellingPriceCalculator.DTORiskPercent = data.dtoPercent;
+      sellingPriceCalculator.CustomerReturnCost = data.dtoRiskCost;
+      sellingPriceCalculator.DTONorm = Number(((data.dtoRiskCost * data.dtoPercent) / 100).toFixed(2));
+
+      sellingPriceCalculator.totalRiskCost = Number((sellingPriceCalculator.RTONorm + sellingPriceCalculator.DTONorm).toFixed(2));
+
+      sellingPriceCalculator.desiredProfit = Number(data.desiredProfit);
+
+      sellingPriceCalculator.FinalSellingPrice = Number((
+        sellingPriceCalculator.TotalFixedCost +
+        sellingPriceCalculator.totalRiskCost +
+        sellingPriceCalculator.desiredProfit
+      ).toFixed(2));
+
+      sellingPriceCalculator.RoundToNearest = data.roundToNearest;
+
+      sellingPriceCalculator.SuggestedSellingPrice =
+        Math.ceil(sellingPriceCalculator.FinalSellingPrice / sellingPriceCalculator.RoundToNearest) * sellingPriceCalculator.RoundToNearest;
+
+      // Render outputs
+      document.getElementById("totalFixed").textContent = format(sellingPriceCalculator.TotalFixedCost);
+      document.getElementById("rtoNorm").textContent = format(sellingPriceCalculator.RTONorm);
+      document.getElementById("dtoNorm").textContent = format(sellingPriceCalculator.DTONorm);
+      document.getElementById("totalRisk").textContent = format(sellingPriceCalculator.totalRiskCost);
+      document.getElementById("profitValue").textContent = format(sellingPriceCalculator.desiredProfit);
+      document.getElementById("finalPrice").textContent = format(sellingPriceCalculator.FinalSellingPrice);
+      document.getElementById("suggestedPrice").textContent = format(sellingPriceCalculator.SuggestedSellingPrice);
+
+      // Log full object (matches the user-provided structure)
+      console.log("Selling_Price_Calculator", sellingPriceCalculator);
+      return sellingPriceCalculator;
+    }
+
+    // Initialize with defaults
+    function resetToDefaults() {
+      document.getElementById("productCost").value = defaultData.productCost;
+      document.getElementById("packaging").value = defaultData.packaging;
+      document.getElementById("ads").value = defaultData.ads;
+      document.getElementById("shipping").value = defaultData.shipping;
+      document.getElementById("overhead").value = defaultData.overhead;
+      document.getElementById("rtoPercent").value = defaultData.rtoPercent;
+      document.getElementById("rtoRiskCost").value = defaultData.rtoRiskCost;
+      document.getElementById("dtoPercent").value = defaultData.dtoPercent;
+      document.getElementById("dtoRiskCost").value = defaultData.dtoRiskCost;
+      document.getElementById("desiredProfit").value = defaultData.desiredProfit;
+      document.getElementById("roundToNearest").value = defaultData.roundToNearest;
+      computeAndRender();
+    }
+
+    // Wire buttons
+    document.getElementById("calc").addEventListener("click", computeAndRender);
+    document.getElementById("reset").addEventListener("click", resetToDefaults);
+
+    // Also allow "Enter" inside form to calculate
+    document.getElementById("calcForm").addEventListener("keydown", function(e){
+      if (e.key === "Enter") {
+        e.preventDefault();
+        computeAndRender();
+      }
+    });
+
+    // initial render
+    resetToDefaults();
+  </script>
+</body>
+</html>

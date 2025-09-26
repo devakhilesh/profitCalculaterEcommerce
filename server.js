@@ -17,6 +17,20 @@ mongoose
   .catch((err) => {
     console.log(err.message);
   });
+
+  const path = require("path");
+
+  const fs = require("fs");
+
+  app.get("/SellingCalc", async (req, res) => {
+return res.sendFile(path.join(__dirname, "calculatorNew.html")) ;
+  }
+
+)
+
+
+
+
 app.get("/", async (req, res) => {
   return res.send("app is workring completely fine");
 });
