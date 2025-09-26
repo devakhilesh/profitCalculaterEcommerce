@@ -279,7 +279,7 @@
       shipping: 70,
       overhead: 10,
       rtoPercent: 15,
-      dtoPercent: 8.5,
+      dtoPercent: 10,
       rtoRiskCost: 35,
       dtoRiskCost: 160,
       desiredProfit: 60,
@@ -314,7 +314,7 @@
       };
 
       const sellingPriceCalculator = {};
-
+       let total = 100
       sellingPriceCalculator.ProductCost = data.productCost;
       sellingPriceCalculator.Packaging = data.packaging;
       sellingPriceCalculator.Ads = data.ads;
@@ -323,13 +323,23 @@
       sellingPriceCalculator.TotalFixedCost =
         Number((data.productCost + data.packaging + data.ads + data.shipping + data.overhead).toFixed(2));
 
+// dto calculation on delivered order
+const rtoNorm = Number(
+  (100-(total * data.rtoPercent) / 100).toFixed(2)
+); 
+
+console.log("rtoNorm",rtoNorm )
+const dtoCalcuPer =  Number((rtoNorm*data.dtoPercent/100).toFixed(2))
+console.log("dtoCalcuPer", dtoCalcuPer)
+
+//=============================
       sellingPriceCalculator.RTORiskPercent = data.rtoPercent;
       sellingPriceCalculator.RTORiskCost = data.rtoRiskCost;
       sellingPriceCalculator.RTONorm = Number(((data.rtoRiskCost * data.rtoPercent) / 100).toFixed(2));
 
       sellingPriceCalculator.DTORiskPercent = data.dtoPercent;
       sellingPriceCalculator.CustomerReturnCost = data.dtoRiskCost;
-      sellingPriceCalculator.DTONorm = Number(((data.dtoRiskCost * data.dtoPercent) / 100).toFixed(2));
+      sellingPriceCalculator.DTONorm = Number(((data.dtoRiskCost * dtoCalcuPer) / 100).toFixed(2));
 
       sellingPriceCalculator.totalRiskCost = Number((sellingPriceCalculator.RTONorm + sellingPriceCalculator.DTONorm).toFixed(2));
 

@@ -78,7 +78,7 @@ const data = {
   shipping: 70,
   overhead: 10,
   rtoPercent: 15,
-  dtoPercent: 8.5,
+  dtoPercent: 10,
   rtoRiskCost: 35,
   dtoRiskCost: 160,
   desiredProfit: 60,
@@ -94,16 +94,44 @@ sellingPriceCalculator.Overhead = data.overhead;
 sellingPriceCalculator.TotalFixedCost =
   data.productCost + data.packaging + data.ads + data.shipping + data.overhead;
 
+
+/* 
+total 100
+rtoNumber =  100 - RTO% = result  ==> 85%
+
+dtoNumber =  rtoNumber * DTO%   //  85% * 10% = result ==> 8.5%
+
+
+
+
+
+*/
+
+let total = 100
+
 sellingPriceCalculator.RTORiskPercent = data.rtoPercent;
 sellingPriceCalculator.RTORiskCost = data.rtoRiskCost;
+
+const rtoNorm = Number(
+  (100-(total * data.rtoPercent) / 100).toFixed(2)
+); 
+
+console.log("rtoNorm",rtoNorm )
+const dtoCalcuPer =  Number((rtoNorm*data.dtoPercent/100).toFixed(2))
+console.log("dtoCalcuPer", dtoCalcuPer)
+
+
 sellingPriceCalculator.RTONorm = Number(
   ((data.rtoRiskCost * data.rtoPercent) / 100).toFixed(2)
 );
 
+
+ 
+
 sellingPriceCalculator.DTORiskPercent = data.dtoPercent;
 sellingPriceCalculator.CustomerReturnCost = data.dtoRiskCost;
 sellingPriceCalculator.DTONorm = Number(
-  ((data.dtoRiskCost * data.dtoPercent) / 100).toFixed(2)
+  ((data.dtoRiskCost * dtoCalcuPer) / 100).toFixed(2)
 );
 
 sellingPriceCalculator.totalRiskCost =
@@ -114,7 +142,10 @@ sellingPriceCalculator.desiredProfit = data.desiredProfit;
 /* 
 
 Final Selling Price=Fixed Cost Subtotal+Risk Cost Subtotal+Profit Goal\text{Final Selling Price} = \text{Fixed Cost Subtotal} + \text{Risk Cost Subtotal} + \text{Profit Goal} =345+18.85+60=423.85≈₹429–₹439= 345 + 18.85 + 60 = 423.85 \approx. ₹429–₹439
+
+
 */
+
 
 sellingPriceCalculator.FinalSellingPrice = Number(
   (
