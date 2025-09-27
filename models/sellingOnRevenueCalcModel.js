@@ -4,6 +4,7 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 const sellingPriceCalcSchema = new mongoose.Schema(
   {
     // User and Product Identification
+
     userId: {
       type: ObjectId,
       required: true,

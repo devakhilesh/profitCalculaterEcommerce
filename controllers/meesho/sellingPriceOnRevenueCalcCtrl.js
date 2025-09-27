@@ -1,6 +1,6 @@
 const { isValidObjectId } = require("mongoose");
 
-const SellingPriceOnRevenueCalculationModel = require("../models/sellingOnRevenueCalcModel");
+const SellingPriceOnRevenueCalculationModel = require("../../models/sellingOnRevenueCalcModel");
 
 ///============================ selling Price Calculator =========================///
 
@@ -64,7 +64,7 @@ exports.updateSellingHistory = async (req, res) => {
 };
 
 // =================== get All by Platform Id =======
-// pagination 
+// pagination
 
 exports.getAllSellingHistory = async (req, res) => {
   try {
