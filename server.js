@@ -35,17 +35,12 @@ app.get("/", async (req, res) => {
   return res.send("app is workring completely fine");
 });
 
-const ProfitHistory = require("./routes/profitRoute");
 
-const auth = require("./routes/authRoute");
+const routing = require("./routing/routing");
 
-const platForm = require("./routes/platformRoute");
+app.use("/", routing);
 
-app.use("/user", ProfitHistory);
 
-app.use("/auth", auth);
-
-app.use("/platForm", platForm);
 
 const port = process.env.PORT;
 

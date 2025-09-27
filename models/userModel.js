@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const adminAuthSchema = new mongoose.Schema({
+  name: {
+    type: String,
+  },
+
   email: {
     type: String,
     required: true,
@@ -12,7 +16,7 @@ const adminAuthSchema = new mongoose.Schema({
 
   role: {
     type: String,
-    enum:["admin","user"],
+    enum: ["admin", "user"],
     default: "user",
   },
 });

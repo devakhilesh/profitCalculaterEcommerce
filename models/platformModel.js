@@ -26,13 +26,10 @@ const platformSchema = new mongoose.Schema(
 
 module.exports = mongoose.model("Platform", platformSchema);
 
-
 /* 
-
 "name":"Messho"
 "country":"India"
-"defaultGstPercent":"0"
-"status":"active"
-"notes":"filhaaal kuc nhi"
-
+"defaultGstPercent": "0",
+"status": "active",
+"notes": "filhaaal kuc nhi"
 */

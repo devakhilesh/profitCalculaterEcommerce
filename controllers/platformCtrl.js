@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const platformModel = require("../models/platformModel");
 const { isValidObjectId } = require("mongoose");
 
-exports.adminAuthRegister = async (req, res) => {
+exports.adminOrUserAuthRegister = async (req, res) => {
   try {
     const data = req.body;
     const { email, password, role } = data;
@@ -57,7 +57,7 @@ exports.adminAuthRegister = async (req, res) => {
   }
 };
 
-exports.adminAuthLogIn = async (req, res) => {
+exports.adminOrUserAuthLogIn = async (req, res) => {
   try {
     const data = req.body;
 
