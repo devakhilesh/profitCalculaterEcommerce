@@ -21,6 +21,6 @@ router
   .route("/delete/:platformId")
   .delete(authentication, adminAuthorization, deletePlateform);
 
-router.route("/getAll").get(authentication, getAll);
+router.route("/getAll").get(getAll);
 
 module.exports = router;
