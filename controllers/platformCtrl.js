@@ -87,7 +87,7 @@ exports.adminOrUserAuthLogIn = async (req, res) => {
 
     if (!checkPasss) {
       return res
-        .stats(400)
+        .status(400)
         .json({ status: false, messgage: "Invalid email or password" });
     }
 
