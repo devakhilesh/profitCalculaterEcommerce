@@ -1,4 +1,4 @@
- /**
+ /*
  * Interlinked finance logic:
  * - sellingPrice.amount = final price customer pays (incl GST if you store that way).
  * - sellingPrice.gstPercent = GST % applicable to selling price.
@@ -21,5 +21,10 @@
  * - doc.computeDerived(): computes priceWithoutGst, gstAmount and profit fields and writes them to the document
  * - pre('save') runs computeDerived automatically
  */
+
+
+
+
+
 
 

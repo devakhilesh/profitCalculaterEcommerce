@@ -1,6 +1,6 @@
-const { amazonClosingFee } = require("./amazonClosingFee");
-const { amazonFeesData } = require("./amazonData");
-
+const { amazonClosingFee } = require("../../amazonClosingFee");
+const { amazonFeesData } = require("../../amazonData");
+const { amazonShippingFee } = require("../../amazonShippingData");
 
 // ---------------- Helper utilities ----------------
 function normalizeText(t) {
@@ -272,6 +272,58 @@ function getReferralRate(
   }
 }
 
+//========= Shipping Calculation ====
+
+// example mode will be
+//  (
+// fba
+//  easyShip
+//  selfShip
+//  sellerFlex
+//  )
+
+// zone
+// (
+// local
+// regional
+// national
+// )
+
+function getAmazonShippingFee(mode, zone, weightKg) {
+  // Handle self-ship case
+  if (mode === "selfShip") {
+    return {
+      fee: 0,
+      //   note: amazonShippingFee.selfShip.note
+    };
+  }
+
+  const slabs = amazonShippingFee[mode]?.[zone];
+  if (!slabs) {
+    throw new Error(`Invalid mode (${mode}) or zone (${zone})`);
+  }
+
+  // Find matching slab
+  for (let slab of slabs) {
+    if (slab.maxKg === null) {
+      // Above highest slab -> calculate base + extra
+      const extraWeight = Math.max(0, weightKg - slab.minKg);
+      const extraFee = Math.ceil(extraWeight) * slab.extraPerKg;
+      return {
+        fee: slab.base + extraFee,
+        // base: slab.base,
+        // extraFee
+      };
+    }
+
+    if (weightKg >= slab.minKg && weightKg <= slab.maxKg) {
+      return { fee: slab.fee };
+    }
+  }
+
+  throw new Error("No matching slab found for given weight");
+}
+
 // ----------------- Exports (for Node) -----------------
 if (typeof module !== "undefined" && module.exports) {
   module.exports = {
@@ -280,10 +332,9 @@ if (typeof module !== "undefined" && module.exports) {
     getGstPercent,
     getClosingFee,
     getReferralRate,
+    getAmazonShippingFee,
   };
 }
-
-
 
 // console.log("All Categories: \n\n", getAllCategories());
 // console.log(
@@ -295,16 +346,20 @@ if (typeof module !== "undefined" && module.exports) {
 //   getGstPercent("Electronics", "Headphones")
 // );
 
-console.log(
-  "Closing Fee for Baby Products - Baby Strollers: \n\n",
-  getClosingFee("Baby Products, Toys & Education", "Baby Strollers", {
-    price: 550,
-    fulfillmentType: "allCategories",
-  })
-);
+// console.log(
+//   "Closing Fee for Baby Products - Baby Strollers: \n\n",
+//   getClosingFee("Baby Products, Toys & Education", "Baby Strollers", {
+//     price: 550,
+//     fulfillmentType: "allCategories",
+//   })
+// );
 
 // console.log(
 //   "Referral Rate for Electronics - Headphones: \n\n",
 //   getReferralRate("Electronics", "Headphones", 150, {})
-// );
+// )
 
+// console.log(
+//   "Shipping Fee: \n\n",
+//   getAmazonShippingFee("easyShip", "national", 2)
+// );

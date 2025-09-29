@@ -6,6 +6,8 @@ const jwt = require("jsonwebtoken");
 const platformModel = require("../models/platformModel");
 const { isValidObjectId } = require("mongoose");
 
+
+
 exports.adminOrUserAuthRegister = async (req, res) => {
   try {
     const data = req.body;
