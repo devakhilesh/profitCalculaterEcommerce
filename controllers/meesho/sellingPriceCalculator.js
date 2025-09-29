@@ -87,6 +87,31 @@ exports.getAllSellingPriceCalc = async (req, res) => {
   }
 };
 
+// ================== get partiular record by id =============
+
+exports.getSellingPriceCalcById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id || !isValidObjectId(id)) {
+      return res
+        .status(400)
+        .json({ status: false, message: "Invalid record id" });
+    }
+    const getData = await SellingPriceCalculatorModel.findOne({
+      _id: id,
+      userId: req.user._id,
+    });
+    if (!getData) {
+      return res.status(404).json({ status: false, message: "data not found" });
+    }
+    return res.status(200).json({ status: true, data: getData });
+  }
+  catch (err) {
+    return res.status(500).json({ status: false, message: err.message });
+  }
+};
+
+
 // ====================== delete ====================
 
 exports.deleteSellingPriceCalc = async (req, res) => {

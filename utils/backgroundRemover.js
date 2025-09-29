@@ -156,8 +156,8 @@ exports.uploadSingleImageBackgroundRemover = async (image, folderName) => {
 //   }
 // };
 
-
 // Single Image Destroy
+
 exports.deleteSingleImage = async (image) => {
   try {
     if (image.public_id) {
@@ -183,5 +183,3 @@ exports.deleteSingleImage = async (image) => {
     };
   }
 };
-
-

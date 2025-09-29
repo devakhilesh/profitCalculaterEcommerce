@@ -6,6 +6,7 @@ const {
   updateSellingHistory,
   getAllSellingHistory,
   deleteSellingHistory,
+  getSellingHistoryById,
 } = require("../../controllers/meesho/sellingPriceOnRevenueCalcCtrl");
 
 const router = express.Router();
@@ -17,6 +18,8 @@ router
   .put(authentication, updateSellingHistory);
 
 router.route("/getAll/:platformId").get(authentication, getAllSellingHistory);
+
+router.route("/get/:id").get(authentication, getSellingHistoryById);
 
 router.route("/delete/:id").delete(authentication, deleteSellingHistory);
 

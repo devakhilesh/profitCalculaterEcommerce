@@ -5,7 +5,8 @@ const {
   createSellingPriceCalc,
   updateSellingPriceCalc,
   getAllSellingPriceCalc,
-  deleteSellingPriceCalc
+  deleteSellingPriceCalc,
+  getSellingPriceCalcById
 } = require("../../controllers/meesho/sellingPriceCalculator");
 
 const router = express.Router();
@@ -17,6 +18,9 @@ router
   .put(authentication, updateSellingPriceCalc);
 
 router.route("/getAll/:platformId").get(authentication, getAllSellingPriceCalc);
+
+router.route("/get/:id").get(authentication, getSellingPriceCalcById);
+
 
 router.route("/delete/:id").delete(authentication, deleteSellingPriceCalc);
 
