@@ -158,7 +158,8 @@ function computeClosingFeesForPrice(price) {
 }
 
 // ----------------- 4. getClosingFee(category, subcategory, options) -----------------
-
+// need to modify  with new data structure 
+/* 
 async function getClosingFee(categoryInput, subcategoryInput, options = {}) {
   try {
     const cat = findCategoryObj(categoryInput);
@@ -193,6 +194,58 @@ async function getClosingFee(categoryInput, subcategoryInput, options = {}) {
     return { ok: false, error: err.message || String(err) };
   }
 }
+
+ */
+// ----------------- 4. getClosingFee(category, subcategory, options) -----------------
+async function getClosingFee(categoryInput, subcategoryInput, options = {}) {
+  try {
+    const cat = findCategoryObj(categoryInput);
+    const sub = cat ? findSubcategoryObj(cat, subcategoryInput) : null;
+
+    const priceHint =
+      options && typeof options.price === "number" ? options.price : null;
+
+    if (typeof priceHint === "number") {
+      const allFees = computeClosingFeesForPrice(priceHint);
+
+      if (options.fulfillmentType) {
+        const ft = options.fulfillmentType;
+
+        // Special handling for selfShip (books vs others)
+        if (ft === "selfShip") {
+          const isBook =
+            normalizeText(subcategoryInput).includes("book") ||
+            normalizeText(cat?.category_name).includes("book");
+
+          const st = options.selfShipType || (isBook ? "books" : "allExceptBooks");
+
+          return {
+            ok: true,
+            fulfillmentType: ft,
+            selfShipType: st,
+            fee: allFees.selfShip ? allFees.selfShip[st] : null,
+          };
+        }
+
+        // For other fulfillment types (fba, easyShip, sellerFlex)
+        return {
+          ok: true,
+          fulfillmentType: ft,
+          fee: allFees[ft] || null,
+        };
+      }
+
+      // Return all slabs if fulfillmentType not specified
+      return { ok: true, fees_for_price: allFees };
+    }
+
+    // No price provided → return entire config
+    return { ok: true, fixedClosingFeeData: amazonClosingFee.fixedClosingFee };
+  } catch (err) {
+    return { ok: false, error: err.message || String(err) };
+  }
+}
+
 
 // ----------------- 5. getReferralRate(category, subcategory, sellingPrice, options) -----------------
 
@@ -350,7 +403,7 @@ if (typeof module !== "undefined" && module.exports) {
 //   "Closing Fee for Baby Products - Baby Strollers: \n\n",
 //   getClosingFee("Baby Products, Toys & Education", "Baby Strollers", {
 //     price: 550,
-//     fulfillmentType: "allCategories",
+//     fulfillmentType: "sellerFlex",
 //   })
 // );
 
