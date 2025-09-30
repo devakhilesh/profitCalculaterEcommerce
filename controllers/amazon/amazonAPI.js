@@ -101,6 +101,12 @@ exports.fetchAmazonShippingFee = async (req, res) => {
         .json({ status: false, message: "mode, zone and weightKg are required" });
     }
 
+    if( isNaN(Number(weightKg)) || Number(weightKg) <= 0 ) {
+      return res
+        .status(400)
+        .json({ status: false, message: "weightKg must be a positive number" });
+    }
+
     const data = await getAmazonShippingFee(mode, zone, Number(weightKg));
     return res.status(200).json({ status: true, data });
   } catch (err) {

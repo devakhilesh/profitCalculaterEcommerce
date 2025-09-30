@@ -81,7 +81,7 @@ function findSubcategoryObj(catObj, subcategoryInput) {
 }
 
 // ----------------- 1. getAllCategories -----------------
-function getAllCategories() {
+async function getAllCategories() {
   try {
     const list = amazonFeesData.categories.map((c) => ({
       category_id: c.category_id,
@@ -94,7 +94,7 @@ function getAllCategories() {
 }
 
 // ----------------- 2. getSubcategories(category) -----------------
-function getSubcategories(categoryInput) {
+async function getSubcategories(categoryInput) {
   try {
     const cat = findCategoryObj(categoryInput);
     if (!cat) return { ok: false, error: "Category not found" };
@@ -114,7 +114,7 @@ function getSubcategories(categoryInput) {
 }
 
 // ----------------- 3. getGstPercent(category, subcategory) -----------------
-function getGstPercent(categoryInput, subcategoryInput) {
+async function getGstPercent(categoryInput, subcategoryInput) {
   try {
     const cat = findCategoryObj(categoryInput);
     if (!cat) return { ok: false, error: "Category not found" };
@@ -159,7 +159,7 @@ function computeClosingFeesForPrice(price) {
 
 // ----------------- 4. getClosingFee(category, subcategory, options) -----------------
 
-function getClosingFee(categoryInput, subcategoryInput, options = {}) {
+async function getClosingFee(categoryInput, subcategoryInput, options = {}) {
   try {
     const cat = findCategoryObj(categoryInput);
     const sub = cat ? findSubcategoryObj(cat, subcategoryInput) : null;
@@ -196,7 +196,7 @@ function getClosingFee(categoryInput, subcategoryInput, options = {}) {
 
 // ----------------- 5. getReferralRate(category, subcategory, sellingPrice, options) -----------------
 
-function getReferralRate(
+async function getReferralRate(
   categoryInput,
   subcategoryInput,
   sellingPrice,
@@ -289,7 +289,7 @@ function getReferralRate(
 // national
 // )
 
-function getAmazonShippingFee(mode, zone, weightKg) {
+async function getAmazonShippingFee(mode, zone, weightKg) {
   // Handle self-ship case
   if (mode === "selfShip") {
     return {
