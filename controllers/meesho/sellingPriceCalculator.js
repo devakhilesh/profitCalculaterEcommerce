@@ -1,5 +1,5 @@
 const { isValidObjectId } = require("mongoose");
-const SellingPriceCalculatorModel = require("../../models/sellingPriceCalculatorModel");
+const SellingPriceCalculatorModel = require("../../models/messho/sellingPriceCalculatorModel");
 
 
 

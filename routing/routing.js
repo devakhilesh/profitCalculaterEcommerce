@@ -14,6 +14,10 @@ const sellingPriceNormalCalcRoute = require("../routes/meeshoPlatform/sellingpri
 
 const amazonSellingPriceHelperRoute = require("../routes/amazonPlatform/amazonSellingPriceHelperRoute");
 
+const amazonSellingprice = require("../routes/amazonPlatform/amazonSellingPriceRoute")
+
+
+const amazonProfitLossCalcModel = require("../routes/amazonPlatform/amazonProfitLossRoute")
 
 const bgRemoverRoute = require("../routes/bgRemoverRoute");
 
@@ -30,5 +34,8 @@ routes.use("/user/bgRemover", bgRemoverRoute);
 
 routes.use("/amazon/helper", amazonSellingPriceHelperRoute);
 
+routes.use("/user/amazon/sellingPrice", amazonSellingprice);
+
+routes.use("/user/amazon/profitLossCalc", amazonProfitLossCalcModel);
 
 module.exports = routes;

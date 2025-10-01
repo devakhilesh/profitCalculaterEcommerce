@@ -1,10 +1,9 @@
 const { isValidObjectId } = require("mongoose");
-
-const SellingPriceOnRevenueCalculationModel = require("../../models/messho/sellingOnRevenueCalcModel");
+const Amazon_SellingPriceCalculatorModel = require("../../models/amazon/amazonSellingPriceCalcModel");
 
 ///============================ selling Price Calculator =========================///
 
-exports.createSellingHistory = async (req, res) => {
+exports.createAmazonSellingPriceCalc = async (req, res) => {
   try {
     const platformId = req.params.platformId;
     if (!platformId) {
@@ -22,7 +21,7 @@ exports.createSellingHistory = async (req, res) => {
 
     req.body.userId = req.user._id;
 
-    const saveData = await SellingPriceOnRevenueCalculationModel.create({
+    const saveData = await Amazon_SellingPriceCalculatorModel.create({
       ...req.body,
       platformId,
     });
@@ -35,21 +34,20 @@ exports.createSellingHistory = async (req, res) => {
 
 //===================== Update record ============
 
-exports.updateSellingHistory = async (req, res) => {
+exports.updateAmazonSellingPriceCalc = async (req, res) => {
   try {
-    const { sellingHistoryId } = req.params;
-    if (!sellingHistoryId || !isValidObjectId(sellingHistoryId)) {
+    const { sellingPriceCalcId } = req.params;
+    if (!sellingPriceCalcId || !isValidObjectId(sellingPriceCalcId)) {
       return res
         .status(400)
-        .json({ status: false, message: "Invalid record sellingHistoryId" });
+        .json({ status: false, message: "Invalid record sellingPriceCalcId" });
     }
 
-    const updated =
-      await SellingPriceOnRevenueCalculationModel.findOneAndUpdate(
-        { _id: sellingHistoryId, userId: req.user._id },
-        { $set: req.body },
-        { new: true }
-      );
+    const updated = await Amazon_SellingPriceCalculatorModel.findOneAndUpdate(
+      { _id: sellingPriceCalcId, userId: req.user._id },
+      { $set: req.body },
+      { new: true }
+    );
 
     if (!updated) {
       return res
@@ -66,7 +64,7 @@ exports.updateSellingHistory = async (req, res) => {
 // =================== get All by Platform Id =======
 // pagination
 
-exports.getAllSellingHistory = async (req, res) => {
+exports.getAllAmazonSellingPriceCalc = async (req, res) => {
   try {
     const platformId = req.params.platformId;
 
@@ -75,7 +73,7 @@ exports.getAllSellingHistory = async (req, res) => {
         .status(400)
         .json({ status: false, message: "Invalid platformId" });
     }
-    const getAll = await SellingPriceOnRevenueCalculationModel.find({
+    const getAll = await Amazon_SellingPriceCalculatorModel.find({
       userId: req.user._id,
       platformId: platformId,
     }).sort({ updatedAt: -1 });
@@ -88,7 +86,7 @@ exports.getAllSellingHistory = async (req, res) => {
 
 // ================== get partiular record by id =============
 
-exports.getSellingHistoryById = async (req, res) => {
+exports.getAmazonSellingPriceCalcById = async (req, res) => {
   try {
     const { id } = req.params;
     if (!id || !isValidObjectId(id)) {
@@ -96,7 +94,7 @@ exports.getSellingHistoryById = async (req, res) => {
         .status(400)
         .json({ status: false, message: "Invalid record id" });
     }
-    const getData = await SellingPriceOnRevenueCalculationModel.findOne({
+    const getData = await Amazon_SellingPriceCalculatorModel.findOne({
       _id: id,
       userId: req.user._id,
     });
@@ -111,7 +109,7 @@ exports.getSellingHistoryById = async (req, res) => {
 
 // ====================== delete ====================
 
-exports.deleteSellingHistory = async (req, res) => {
+exports.deleteAmazonSellingPriceCalc = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -121,8 +119,9 @@ exports.deleteSellingHistory = async (req, res) => {
         .json({ status: false, message: "Invalid record id" });
     }
 
-    const deleted =
-      await SellingPriceOnRevenueCalculationModel.findByIdAndDelete(id);
+    const deleted = await Amazon_SellingPriceCalculatorModel.findByIdAndDelete(
+      id
+    );
     if (!deleted) {
       return res.status(404).json({ status: false, data: "data not found" });
     }
