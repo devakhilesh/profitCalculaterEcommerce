@@ -418,7 +418,10 @@ async function calculateAmazonSellingPriceByCostPrice(
     // guess sanity: if user didn't provide good guess, set a safe one
     guessSPInput = Number(guessSPInput);
 
-    if (!isNaN(guessSPInput)) {
+
+
+
+    if (isNaN(guessSPInput)) {
       return { ok: false, error: "Invalid guessSPInput" };
     }
       
@@ -445,7 +448,7 @@ async function calculateAmazonSellingPriceByCostPrice(
       const feesBeforeGst = referral_amount + closingFee + shippingFee;
       const gstAmount = (feesBeforeGst * gstPct) / 100;
 
-      const totalCostToCover = CP + feesBeforeGst + gstAmount + desiredProfitFlat;
+      const totalCostToCover = guessSPInput + feesBeforeGst + gstAmount + desiredProfitFlat;
       const newSP = totalCostToCover;
 
       const diff = Math.abs(newSP - guessSP);
@@ -471,12 +474,12 @@ async function calculateAmazonSellingPriceByCostPrice(
 
     const feesBeforeGst = finalReferral + finalClosingFee + finalShippingFee;
     const finalGst = (feesBeforeGst * gstPct) / 100;
-    const totalCost = CP + feesBeforeGst + finalGst;
+    const totalCost = guessSPInput + feesBeforeGst + finalGst;
     const profit = lastSP - totalCost;
 
     return {
       ok: true,
-      // input: { CP, desiredProfitFlat, profitType, profitValue, category, subcategory, weightKg, mode, zone, gstPct },
+      // input: { guessSPInput, desiredProfitFlat, profitType, profitValue, category, subcategory, weightKg, mode, zone, gstPct },
       result: {
         referral: Number(finalReferral.toFixed(2)),
         closingFee: Number(finalClosingFee.toFixed(2)),
