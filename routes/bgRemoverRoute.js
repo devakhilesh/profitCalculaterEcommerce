@@ -1,6 +1,11 @@
 const express = require("express");
 const { authentication, userAuthorization } = require("../middi/userAuth");
-const { removeBackground, getAllBackgroundRemovedImages, deleteBackgroundRemovedImage } = require("../controllers/backgroundRemoverCtrl");
+const {
+  removeBackground,
+  getAllBackgroundRemovedImages,
+  deleteBackgroundRemovedImage,
+} = require("../controllers/backgroundRemoverCtrl");
+const { replaceBackground } = require("../controllers/bgChangerCtrl");
 
 const router = express.Router();
 
@@ -13,5 +18,6 @@ router
 router
   .route("/delete/:imageId")
   .delete(authentication, userAuthorization, deleteBackgroundRemovedImage);
+
 
 module.exports = router;

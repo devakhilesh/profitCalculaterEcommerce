@@ -388,9 +388,10 @@ async function calculateAmazonSellingPriceByCostPrice(
   guessSPInput
 ) {
   try {
-
-    if (!category || !subcategory) return { ok: false, error: "category and subcategory are required" };
-    if (!mode || !zone) return { ok: false, error: "mode and zone are required" };
+    if (!category || !subcategory)
+      return { ok: false, error: "category and subcategory are required" };
+    if (!mode || !zone)
+      return { ok: false, error: "mode and zone are required" };
 
     const weightKg = Math.max(0.001, Number(weightGram || 0) / 1000);
 
@@ -418,13 +419,9 @@ async function calculateAmazonSellingPriceByCostPrice(
     // guess sanity: if user didn't provide good guess, set a safe one
     guessSPInput = Number(guessSPInput);
 
-
-
-
     if (isNaN(guessSPInput)) {
       return { ok: false, error: "Invalid guessSPInput" };
     }
-      
 
     let guessSP = guessSPInput;
     let lastSP = guessSP;
@@ -433,22 +430,36 @@ async function calculateAmazonSellingPriceByCostPrice(
 
     for (let i = 0; i < maxIter; i++) {
       // await referral
-      const ref = await getReferralRate(category, subcategory, guessSP, { includeClosingFee: false }).catch(e => ({ ok:false, error: e.message || String(e) }));
-      const referral_amount = ref && ref.ok ? Number(ref.referral_amount || 0) : 0;
+      const ref = await getReferralRate(category, subcategory, guessSP, {
+        includeClosingFee: false,
+      }).catch((e) => ({ ok: false, error: e.message || String(e) }));
+      const referral_amount =
+        ref && ref.ok ? Number(ref.referral_amount || 0) : 0;
 
       // await closing
       const closingOptions = { price: guessSP, fulfillmentType: mode };
-      const closing = await getClosingFee(category, subcategory, closingOptions).catch(e => ({ ok:false, error: e.message || String(e) }));
-      const closingFee = closing && (closing.fee || (closing.fees_for_price ? 0 : 0)) ? Number(closing.fee || 0) : 0;
+      const closing = await getClosingFee(
+        category,
+        subcategory,
+        closingOptions
+      ).catch((e) => ({ ok: false, error: e.message || String(e) }));
+      const closingFee =
+        closing && (closing.fee || (closing.fees_for_price ? 0 : 0))
+          ? Number(closing.fee || 0)
+          : 0;
 
       // await shipping
-      const ship = await getAmazonShippingFee(mode, zone, weightKg).catch(e => ({ ok:false, error: e.message || String(e), fee:0 }));
-      const shippingFee = ship && typeof ship.fee === "number" ? Number(ship.fee) : 0;
+      const ship = await getAmazonShippingFee(mode, zone, weightKg).catch(
+        (e) => ({ ok: false, error: e.message || String(e), fee: 0 })
+      );
+      const shippingFee =
+        ship && typeof ship.fee === "number" ? Number(ship.fee) : 0;
 
       const feesBeforeGst = referral_amount + closingFee + shippingFee;
       const gstAmount = (feesBeforeGst * gstPct) / 100;
 
-      const totalCostToCover = guessSPInput + feesBeforeGst + gstAmount + desiredProfitFlat;
+      const totalCostToCover =
+        guessSPInput + feesBeforeGst + gstAmount + desiredProfitFlat;
       const newSP = totalCostToCover;
 
       const diff = Math.abs(newSP - guessSP);
@@ -463,14 +474,28 @@ async function calculateAmazonSellingPriceByCostPrice(
     }
 
     // final breakdown (await final calls)
-    const finalRef = await getReferralRate(category, subcategory, lastSP, { includeClosingFee: false }).catch(e => ({ ok:false, error: e.message || String(e) }));
-    const finalReferral = finalRef && finalRef.ok ? Number(finalRef.referral_amount || 0) : 0;
+    const finalRef = await getReferralRate(category, subcategory, lastSP, {
+      includeClosingFee: false,
+    }).catch((e) => ({ ok: false, error: e.message || String(e) }));
+    const finalReferral =
+      finalRef && finalRef.ok ? Number(finalRef.referral_amount || 0) : 0;
 
-    const finalClosing = await getClosingFee(category, subcategory, { price: lastSP, fulfillmentType: mode }).catch(e => ({ ok:false, error: e.message || String(e) }));
-    const finalClosingFee = finalClosing && typeof finalClosing.fee === "number" ? Number(finalClosing.fee) : 0;
+    const finalClosing = await getClosingFee(category, subcategory, {
+      price: lastSP,
+      fulfillmentType: mode,
+    }).catch((e) => ({ ok: false, error: e.message || String(e) }));
+    const finalClosingFee =
+      finalClosing && typeof finalClosing.fee === "number"
+        ? Number(finalClosing.fee)
+        : 0;
 
-    const finalShip = await getAmazonShippingFee(mode, zone, weightKg).catch(e => ({ ok:false, error: e.message || String(e), fee:0 }));
-    const finalShippingFee = finalShip && typeof finalShip.fee === "number" ? Number(finalShip.fee) : 0;
+    const finalShip = await getAmazonShippingFee(mode, zone, weightKg).catch(
+      (e) => ({ ok: false, error: e.message || String(e), fee: 0 })
+    );
+    const finalShippingFee =
+      finalShip && typeof finalShip.fee === "number"
+        ? Number(finalShip.fee)
+        : 0;
 
     const feesBeforeGst = finalReferral + finalClosingFee + finalShippingFee;
     const finalGst = (feesBeforeGst * gstPct) / 100;
@@ -488,15 +513,14 @@ async function calculateAmazonSellingPriceByCostPrice(
         totalCost: Number(totalCost.toFixed(2)),
         desiredProfit: Number(desiredProfitFlat.toFixed(2)),
         sellingPrice: Number(lastSP.toFixed(2)),
-        profit: Number(profit.toFixed(2))
-      }
+        profit: Number(profit.toFixed(2)),
+      },
     };
   } catch (err) {
     console.error("Calculation error:", err);
     return { ok: false, error: err.message || String(err) };
   }
 }
-
 
 // ----------------- Exports (for Node) -----------------
 if (typeof module !== "undefined" && module.exports) {
@@ -550,6 +574,4 @@ if (typeof module !== "undefined" && module.exports) {
   console.log(out);
 })(); */
 
-
 // Related portions of node_modules/lodash/_reTrim.js:
-

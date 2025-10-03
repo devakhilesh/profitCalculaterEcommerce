@@ -183,3 +183,100 @@ exports.deleteSingleImage = async (image) => {
     };
   }
 };
+
+
+//bg Changer 
+
+
+/**
+ * Upload an image, create an eager derived version with background removal,
+ * and return the public_id and url of the derived (BG removed) image when available.
+ */
+exports.uploadSingleImageBackgroundChanger = async (image, folderName = "backgroundChanger", prompt = "") => {
+  try {
+    if (!image || !image.data) {
+      return { status: false, message: "Invalid image data" };
+    }
+
+    // sanitize/limit prompt length (Cloudinary may have limits)
+    let safePrompt = String(prompt || "").trim();
+    if (safePrompt.length === 0) {
+      // default prompt
+      safePrompt = "Minimalist background with a soft pastel gradient and even lighting";
+    }
+    // ensure prompt is not too long
+    if (safePrompt.length > 220) safePrompt = safePrompt.slice(0, 220);
+
+    // Build transformation string. Use `gen_background_replace:prompt_<your prompt>`
+    const genBgEffect = `gen_background_replace:prompt_${safePrompt}`;
+
+    const result = await new Promise((resolve, reject) => {
+      cloudinary.uploader
+        .upload_stream(
+          {
+            resource_type: "image",
+            folder: folderName,
+            eager: [
+              // Derived image with replaced background, PNG to preserve transparency if needed
+              { effect: genBgEffect, format: "png" },
+            ],
+            eager_async: false, // try to wait for eager generation; set true if you prefer background job
+          },
+          (error, uploadResult) => {
+            if (error) return reject(error);
+            resolve(uploadResult);
+          }
+        )
+        .end(image.data);
+    });
+
+    // pick eager derived if available
+    let replacedPublicId = null;
+    let replacedUrl = null;
+
+    if (result.eager && Array.isArray(result.eager) && result.eager.length > 0) {
+      replacedPublicId = result.eager[0].public_id || `${result.public_id}_eager_0`;
+      replacedUrl = result.eager[0].secure_url || result.eager[0].url;
+    } else {
+      // fallback: build an on-the-fly URL with the same transformation (won't create a derived asset)
+      try {
+        replacedPublicId = result.public_id;
+        replacedUrl = cloudinary.url(result.public_id, {
+          transformation: [{ effect: genBgEffect }, { format: "png" }],
+          secure: true,
+          resource_type: "image",
+        });
+      } catch (e) {
+        replacedPublicId = result.public_id;
+        replacedUrl = result.secure_url;
+      }
+    }
+
+    return {
+      status: true,
+      message: "Upload completed",
+      data: {
+        original_public_id: result.public_id,
+        original_url: result.secure_url,
+        replaced_public_id: replacedPublicId,
+        replaced_url: replacedUrl,
+        raw_result: undefined, // avoid sending full raw result; set to result for debug if needed
+      },
+      meta: {
+        cloudinary_result: {
+          public_id: result.public_id,
+          format: result.format,
+          eager: result.eager && result.eager.length ? { first: result.eager[0] } : undefined,
+        },
+      },
+    };
+  } catch (error) {
+    console.error("uploadSingleImageBackgroundChanger error:", error);
+    return {
+      status: false,
+      message: "Image upload / background replace failed: " + (error.message || String(error)),
+      error,
+    };
+  }
+};
+
