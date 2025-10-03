@@ -16,7 +16,7 @@ router
   .post(authentication, createAmazonProfitLossCalc);
 
 router
-  .route("/update/:profitLossCalcId")
+  .route("/update/:ProfitLossCalcId")
   .put(authentication, updateAmazonProfitLossCalc);
 
 router
