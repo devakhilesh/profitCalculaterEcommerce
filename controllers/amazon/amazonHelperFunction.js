@@ -378,7 +378,6 @@ async function getAmazonShippingFee(mode, zone, weightKg) {
 }
 
 async function calculateAmazonSellingPriceByCostPrice(
-  costPrice, // number (CP)
   profitValue, // number (if percent, it's %)
   category, // category name string
   subcategory, // subcategory display name or id
@@ -389,8 +388,6 @@ async function calculateAmazonSellingPriceByCostPrice(
   guessSPInput
 ) {
   try {
-    const CP = Number(costPrice) || 0;
-    if (CP <= 0) return { ok: false, error: "costPrice must be > 0" };
 
     if (!category || !subcategory) return { ok: false, error: "category and subcategory are required" };
     if (!mode || !zone) return { ok: false, error: "mode and zone are required" };
@@ -420,10 +417,11 @@ async function calculateAmazonSellingPriceByCostPrice(
 
     // guess sanity: if user didn't provide good guess, set a safe one
     guessSPInput = Number(guessSPInput);
-    if (typeof guessSPInput !== "number" || guessSPInput <= 0) {
-      // sensible default: CP + desiredProfit + buffer(50)
-      guessSPInput = CP + desiredProfitFlat + 50;
+
+    if (!isNaN(guessSPInput)) {
+      return { ok: false, error: "Invalid guessSPInput" };
     }
+      
 
     let guessSP = guessSPInput;
     let lastSP = guessSP;

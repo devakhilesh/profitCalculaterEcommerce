@@ -144,7 +144,6 @@ exports.amazonSellingPriceCalc = async (req, res) => {
 
     // Call your function with parsed values
     const result = await calculateAmazonSellingPriceByCostPrice(
-      Number(costPrice),
       Number(profitValue),
       category,
       subcategory,
