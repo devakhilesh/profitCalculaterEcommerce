@@ -39,7 +39,7 @@ const userSubscribedSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    // subscribed for
+    // subscribed form
     subscribedDateTime: {
       type: Date,
     },

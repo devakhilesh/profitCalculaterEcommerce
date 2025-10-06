@@ -13,7 +13,7 @@ const subscriptionSchema = new mongoose.Schema(
       required: true,
     },
 
-    mrpSubscription: {
+    mrpSubscription: {    // 799   discount 50%  349
       type: Number,
       required: true,
     },

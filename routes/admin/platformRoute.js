@@ -1,11 +1,11 @@
 const express = require("express");
-const { authentication, adminAuthorization } = require("../middi/userAuth");
+const { authentication, adminAuthorization } = require("../../middi/userAuth");
 const {
   createplateform,
   updatePlateform,
   deletePlateform,
   getAll,
-} = require("../controllers/platformCtrl");
+} = require("../../controllers/platformCtrl");
 
 const router = express.Router();
 

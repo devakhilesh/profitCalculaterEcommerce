@@ -4,7 +4,7 @@ const routes = express();
 
 const authRoute = require("../routes/authRoute");
 
-const PlatformRoute = require("../routes/platformRoute");
+const PlatformRoute = require("../routes/admin/platformRoute");
 
 const sellingPriceOnRevenueCalcRoute = require("../routes/meeshoPlatform/sellingOnRevenueCalcRoute");
 
