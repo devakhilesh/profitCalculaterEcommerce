@@ -41,6 +41,8 @@ exports.replaceBackground = async (req, res) => {
       });
     }
 
+    console.log("kkkkkk",uploadRes)
+
     // prepare DB doc
     const data = {
       userId,

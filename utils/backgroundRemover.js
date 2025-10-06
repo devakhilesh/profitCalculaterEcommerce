@@ -184,15 +184,17 @@ exports.deleteSingleImage = async (image) => {
   }
 };
 
-
-//bg Changer 
-
+//bg Changer
 
 /**
  * Upload an image, create an eager derived version with background removal,
  * and return the public_id and url of the derived (BG removed) image when available.
  */
-exports.uploadSingleImageBackgroundChanger = async (image, folderName = "backgroundChanger", prompt = "") => {
+exports.uploadSingleImageBackgroundChanger = async (
+  image,
+  folderName = "backgroundChanger",
+  prompt = ""
+) => {
   try {
     if (!image || !image.data) {
       return { status: false, message: "Invalid image data" };
@@ -202,7 +204,8 @@ exports.uploadSingleImageBackgroundChanger = async (image, folderName = "backgro
     let safePrompt = String(prompt || "").trim();
     if (safePrompt.length === 0) {
       // default prompt
-      safePrompt = "Minimalist background with a soft pastel gradient and even lighting";
+      safePrompt =
+        "Minimalist background with a soft pastel gradient and even lighting";
     }
     // ensure prompt is not too long
     if (safePrompt.length > 220) safePrompt = safePrompt.slice(0, 220);
@@ -234,8 +237,13 @@ exports.uploadSingleImageBackgroundChanger = async (image, folderName = "backgro
     let replacedPublicId = null;
     let replacedUrl = null;
 
-    if (result.eager && Array.isArray(result.eager) && result.eager.length > 0) {
-      replacedPublicId = result.eager[0].public_id || `${result.public_id}_eager_0`;
+    if (
+      result.eager &&
+      Array.isArray(result.eager) &&
+      result.eager.length > 0
+    ) {
+      replacedPublicId =
+        result.eager[0].public_id || `${result.public_id}_eager_0`;
       replacedUrl = result.eager[0].secure_url || result.eager[0].url;
     } else {
       // fallback: build an on-the-fly URL with the same transformation (won't create a derived asset)
@@ -252,6 +260,18 @@ exports.uploadSingleImageBackgroundChanger = async (image, folderName = "backgro
       }
     }
 
+    if (
+      !result.secure_url ||
+      result.secure_url == "undefined" ||
+      !replacedUrl ||
+      replacedUrl == "undefined"
+    ) {
+      return {
+        status: false,
+        message: "Image upload / background replace failed",
+      };
+    }
+
     return {
       status: true,
       message: "Upload completed",
@@ -266,7 +286,10 @@ exports.uploadSingleImageBackgroundChanger = async (image, folderName = "backgro
         cloudinary_result: {
           public_id: result.public_id,
           format: result.format,
-          eager: result.eager && result.eager.length ? { first: result.eager[0] } : undefined,
+          eager:
+            result.eager && result.eager.length
+              ? { first: result.eager[0] }
+              : undefined,
         },
       },
     };
@@ -274,9 +297,10 @@ exports.uploadSingleImageBackgroundChanger = async (image, folderName = "backgro
     console.error("uploadSingleImageBackgroundChanger error:", error);
     return {
       status: false,
-      message: "Image upload / background replace failed: " + (error.message || String(error)),
+      message:
+        "Image upload / background replace failed: " +
+        (error.message || String(error)),
       error,
     };
   }
 };
-

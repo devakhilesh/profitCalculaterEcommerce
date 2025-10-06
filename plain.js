@@ -1,30 +1,71 @@
- /*
- * Interlinked finance logic:
- * - sellingPrice.amount = final price customer pays (incl GST if you store that way).
- * - sellingPrice.gstPercent = GST % applicable to selling price.
- * - sellingPrice.priceWithoutGst = computed as selling / (1 + gst/100)
- * - sellingPrice.gstAmount = selling - priceWithoutGst
- *
- * - TotalCost = sum of all cost components (priceWithoutGst + packaging + shipping + per-order costs + return losses + damage + tds + tcs etc.)
- *   (You can customize which fields you include in total cost; below I include the common ones.)
- *
- * - profitAmount = priceWithoutGst - directCostsIncluded
- * - profitPercentOnCost = profitAmount / directCostsIncluded * 100  (if directCostsIncluded > 0)
- * - profitPercentOnSelling = profitAmount / sellingPrice.amount * 100 (if sellingPrice.amount > 0)
- *
- * Functions provided:
- * - statics.computeSellingPriceFromCostAndProfit(cost, profitPercent) -> selling price (priceWithoutGst basis)
- * - statics.computeCostFromSellingAndProfit(selling, profitPercent) -> cost
- * - statics.computeProfitFromSellingAndCost(selling, cost) -> { profitAmount, profitPercentOnCost, profitPercentOnSelling }
- *
- * Instance:
- * - doc.computeDerived(): computes priceWithoutGst, gstAmount and profit fields and writes them to the document
- * - pre('save') runs computeDerived automatically
- */
+/* 
+
+remaining jobs...
+
+admin Subcription Routing 
+
+user getAll Subscrition Plans
+
+subscribed history  razorpay integration
+
+rest will do on instruction 
+
+*/
+
+/* 
+# Choose provider: 'metalsapi' or 'metalpriceapi' or 'goldapi'
+
+*/
+
+// conversion in gram
+
+// https://metals-api.com/home
+
+/* 
+const js = {
+  data: {
+    base: "USD",
+    rates: {
+      XAG: 0.020838590380196,
+      XAU: 0.00025728140713146,
+    }
+  }
+};
+
+const OUNCE_TO_GRAM = 31.1034768;
+
+function inverseRate(rate) { return 1 / rate; }
+function perGram(usdPerOunce) { return usdPerOunce / OUNCE_TO_GRAM; }
+
+const xag = js.data.rates.XAG;
+const xau = js.data.rates.XAU;
+
+const silverUsdPerOunce = inverseRate(xag);
+const silverPerGram = perGram(silverUsdPerOunce);
+
+const goldUsdPerOunce = inverseRate(xau);
+const goldPerGram = perGram(goldUsdPerOunce);
+
+console.log({
+  silver: {
+    usdPerOunce: +silverUsdPerOunce.toFixed(2),
+    usdPerGram: +silverPerGram.toFixed(2),
+    usdPer10g: +(silverPerGram*10).toFixed(2)
+  },
+  gold: {
+    usdPerOunce: +goldUsdPerOunce.toFixed(2),
+    usdPerGram: +goldPerGram.toFixed(2),
+    usdPer10g: +(goldPerGram*10).toFixed(2)
+  }
+});
 
 
 
+*/
 
 
+/* 
 
+Need more research on this 
 
+*/

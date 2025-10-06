@@ -9,6 +9,7 @@ const adminAuthSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  
   password: {
     type: String,
     required: true,

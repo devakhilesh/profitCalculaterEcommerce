@@ -18,6 +18,8 @@ const amazonSellingprice = require("../routes/amazonPlatform/amazonSellingPriceR
 
 const amazonProfitLossCalcRoute = require("../routes/amazonPlatform/amazonProfitLossRoute");
 
+const amazonRevenueCalcRoute = require("../routes/amazonPlatform/amazonRevenueRoute");
+
 const bgRemoverRoute = require("../routes/bgRemoverRoute");
 
 const bgReplacerRoute = require("../routes/bgChangerRoute");
@@ -39,5 +41,7 @@ routes.use("/amazon/helper", amazonSellingPriceHelperRoute);
 routes.use("/user/amazon/sellingPrice", amazonSellingprice);
 
 routes.use("/user/amazon/profitLossCalc", amazonProfitLossCalcRoute);
+
+routes.use("/user/amazon/revenue", amazonRevenueCalcRoute);
 
 module.exports = routes;

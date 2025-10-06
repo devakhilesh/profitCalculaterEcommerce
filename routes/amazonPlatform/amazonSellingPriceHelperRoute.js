@@ -29,8 +29,8 @@ router.route("/referral-rate").get(fetchReferralRate);
 router.route("/shipping-fee").get(fetchAmazonShippingFee);
 
 // seling price calculation route (POST)
-// get 
-router.route("/calculate-selling-price").get(amazonSellingPriceCalc)
+// get
+router.route("/calculate-selling-price").get(amazonSellingPriceCalc);
 
 module.exports = router;
 
