@@ -225,6 +225,12 @@ const amazonRevenueCalcSchema = new mongoose.Schema(
       required: true,
     },
 
+    overHead: {
+      type: Number,
+      default: 0.0,
+    },
+
+
     area: {
       type: String,
       enum: ["local", "regional", "national"],
