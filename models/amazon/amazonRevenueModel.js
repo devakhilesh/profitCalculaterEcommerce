@@ -37,6 +37,18 @@ const amazonRevenueCalcSchema = new mongoose.Schema(
       trim: true,
       default: "Amazon Revenue Calculation",
     },
+
+    categoryName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    subcategoryName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
     // Input Parameters
     inputs: {
       dispatch: {
@@ -207,7 +219,24 @@ const amazonRevenueCalcSchema = new mongoose.Schema(
     gstAmount: {
       type: Number,
       default: 0,
+    }, shippingType: {
+      type: String,
+      enum: ["fba", "selfShip", "easyShip", "sellerFlex"],
+      required: true,
     },
+
+    area: {
+      type: String,
+      enum: ["local", "regional", "national"],
+      required: true,
+    },
+
+    weightKg: {
+      type: Number,
+      required: true,
+    },
+
+
 
     finalSellingPrice: {
       type: Number,
