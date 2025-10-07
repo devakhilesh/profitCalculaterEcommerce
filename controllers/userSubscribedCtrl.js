@@ -127,6 +127,9 @@ exports.createPaymentOrder = async (req, res) => {
       isPaymentVerified: false,
     });
 
+console.log( "  payment \n\n:", newPayment)
+console.log( "\n\nRazorPay  payment \n\n:",razorpayOrder)
+
     return res.status(201).json({
       status: true,
       message: "Order created successfully",
@@ -370,7 +373,7 @@ if (razorpay_order_id && razorpay_payment_id && razorpay_signature) {
   payment.expairySubsDateTime = addDays(paidAt, durationDays);
 
   await payment.save();
-  
+
 ////////////////////////////////////////////
 console.log("payment success--1", payment)
 ///////////////////////////////////////////
