@@ -21,10 +21,12 @@ const userSubscribedSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+
     paidAt: {
       type: Date,
       default: null,
     },
+
     paymentInfo: {
       razorpay_order_id: String,
       razorpay_payment_id: String,
@@ -35,6 +37,7 @@ const userSubscribedSchema = new mongoose.Schema(
         default: "Pending",
       },
     },
+
     isPaymentVerified: {
       type: Boolean,
       default: false,

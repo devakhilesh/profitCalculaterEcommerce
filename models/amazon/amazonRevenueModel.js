@@ -219,7 +219,8 @@ const amazonRevenueCalcSchema = new mongoose.Schema(
     gstAmount: {
       type: Number,
       default: 0,
-    }, shippingType: {
+    },
+    shippingType: {
       type: String,
       enum: ["fba", "selfShip", "easyShip", "sellerFlex"],
       required: true,
@@ -229,7 +230,6 @@ const amazonRevenueCalcSchema = new mongoose.Schema(
       type: Number,
       default: 0.0,
     },
-
 
     area: {
       type: String,
@@ -241,8 +241,6 @@ const amazonRevenueCalcSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-
-
 
     finalSellingPrice: {
       type: Number,

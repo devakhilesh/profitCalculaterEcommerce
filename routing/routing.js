@@ -24,6 +24,14 @@ const bgRemoverRoute = require("../routes/bgRemoverRoute");
 
 const bgReplacerRoute = require("../routes/bgChangerRoute");
 
+
+// subscription 
+
+const userSbscriptionRoute = require("../routes/userSubscribeRoute")
+
+//======================================= routing =======
+
+
 routes.use("/auth", authRoute);
 
 routes.use("/platForm", PlatformRoute);
@@ -43,5 +51,8 @@ routes.use("/user/amazon/sellingPrice", amazonSellingprice);
 routes.use("/user/amazon/profitLossCalc", amazonProfitLossCalcRoute);
 
 routes.use("/user/amazon/revenue", amazonRevenueCalcRoute);
+
+routes.use("/user/subscription", userSbscriptionRoute);
+
 
 module.exports = routes;

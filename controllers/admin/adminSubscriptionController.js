@@ -1,5 +1,5 @@
 const { isValidObjectId } = require("mongoose");
-const SubscriptionModel = require("../../models/adminSubscriptionModel");
+const SubscriptionModel = require("../../models/adminModel/adminSubscriptionModel");
 
 // create subscriptions
 
@@ -34,7 +34,10 @@ exports.createSubscription = async (req, res) => {
     if (count > 0) {
       return res.status(400).send({
         status: false,
-        message: `${queries[i]}, is Required`,
+        message: `All Fields Are Required !: "subscriptionName",
+      "subscriptionType",
+      "mrpSubscription",
+      "validUpTo"`,
       });
     }
 
