@@ -151,7 +151,7 @@ exports.createSubscription = async (req, res) => {
 
     return res
       .status(201)
-      .json({ status: true, message: "Subscription Created Successfully" });
+      .json({ status: true, message: "Subscription Created Successfully", data:createSubs });
   } catch (err) {
     return res.status(500).json({ status: false, message: err.message });
   }
@@ -188,7 +188,7 @@ exports.updateSubscription = async (req, res) => {
     }
     //============== subscriptionType ================
 
-    if (vaildSubType) {
+    if (data.vaildSubType) {
       const vaildSubType = ["Weekly", "Monthly", "Yearly"];
 
       if (
@@ -261,7 +261,7 @@ exports.updateSubscription = async (req, res) => {
 
     const updateSubscription = await SubscriptionModel.findByIdAndUpdate(
       subscriptionId,
-      { ...data }
+      { ...data },{new:true}
     );
 
     if (!updateSubscription) {
@@ -273,7 +273,7 @@ exports.updateSubscription = async (req, res) => {
 
     return res
       .status(200)
-      .json({ status: true, message: "Subscription Updated Successfully" });
+      .json({ status: true, message: "Subscription Updated Successfully", data:updateSubscription});
   } catch (err) {
     return res.status(500).json({ status: false, message: err.message });
   }
@@ -283,7 +283,24 @@ exports.updateSubscription = async (req, res) => {
 
 exports.getAllSubscription = async (req, res) => {
   try {
-    const getAllSubscription = await SubscriptionModel.find({ active: true });
+    const getAllSubscription = await SubscriptionModel.find();
+    return res.status(200).json({
+      status: true,
+      message: "All Subscription fetched successfully",
+      data: getAllSubscription,
+    });
+  } catch (err) {
+    return res.status(500).json({ status: false, message: err.message });
+  }
+};
+
+
+
+// get All Subscription for user 
+
+exports.getAllSubscriptionUser = async (req, res) => {
+  try {
+    const getAllSubscription = await SubscriptionModel.find({active:true});
     return res.status(200).json({
       status: true,
       message: "All Subscription fetched successfully",

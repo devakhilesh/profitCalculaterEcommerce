@@ -2,6 +2,7 @@ const express = require("express");
 const { authentication, userAuthorization } = require("../middi/userAuth");
 const {
   getAllSubscription,
+  getAllSubscriptionUser,
 } = require("../controllers/admin/adminSubscriptionController");
 const {
   createPaymentOrder,
@@ -14,7 +15,7 @@ const {
 
 const router = express.Router();
 
-router.route("/plans/getAll").get(authentication, getAllSubscription);
+router.route("/plans/getAll").get(authentication, getAllSubscriptionUser);
 
 router
   .route("/payment/create/:subscriptionId")
