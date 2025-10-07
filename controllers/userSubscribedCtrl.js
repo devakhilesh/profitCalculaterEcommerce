@@ -250,7 +250,8 @@ exports.verifyPayment = async (req, res) => {
     const subscription = await SubscriptionModel.findById(
       payment.subscriptionId
     );
-    const durationDays = getDurationDaysFromSubscription(subscription || {});
+    const durationDays = Number(subscription.validUpTo);
+
     payment.expairySubsDateTime = addDays(paidAt, durationDays);
 
     await payment.save();
