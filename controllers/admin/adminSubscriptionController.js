@@ -20,25 +20,46 @@ exports.createSubscription = async (req, res) => {
         .status(400)
         .send({ status: false, message: "please provide required fields" });
 
-    let expectedQueries = [
-      "subscriptionName",
-      "subscriptionType",
-      "mrpSubscription",
-      "validUpTo",
-    ];
-    let queries = Object.keys(data);
-    let count = 0;
-    for (let i = 0; i < queries.length; i++) {
-      if (!expectedQueries.includes(queries[i])) count++;
+    // let expectedQueries = [
+    //   "subscriptionName",
+    //   "subscriptionType",
+    //   "mrpSubscription",
+    //   "validUpTo",
+    // ];
+    // let queries = Object.keys(data);
+    // let count = 0;
+    // for (let i = 0; i < queries.length; i++) {
+    //   if (!expectedQueries.includes(queries[i])) count++;
+    // }
+    // if (count > 0) {
+    //   return res.status(400).send({
+    //     status: false,
+    //     message: `All Fields Are Required !: "subscriptionName",
+    //   "subscriptionType",
+    //   "mrpSubscription",
+    //   "validUpTo"`,
+    //   });
+    // }
+
+    if (!subscriptionName) {
+      return res
+        .status(400)
+        .json({ status: false, message: "Subscription name is required" });
     }
-    if (count > 0) {
-      return res.status(400).send({
-        status: false,
-        message: `All Fields Are Required !: "subscriptionName",
-      "subscriptionType",
-      "mrpSubscription",
-      "validUpTo"`,
-      });
+    if (!subscriptionType) {
+      return res
+        .status(400)
+        .json({ status: false, message: "subscriptionType is required" });
+    }
+    if (!mrpSubscription) {
+      return res
+        .status(400)
+        .json({ status: false, message: "mrpSubscription is required" });
+    }
+    if (!validUpTo) {
+      return res
+        .status(400)
+        .json({ status: false, message: "validUpTo is required" });
     }
 
     // =============== subscriptionName ===========
