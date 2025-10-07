@@ -294,8 +294,6 @@ exports.getAllSubscription = async (req, res) => {
   }
 };
 
-
-
 // get All Subscription for user 
 
 exports.getAllSubscriptionUser = async (req, res) => {

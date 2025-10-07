@@ -27,7 +27,7 @@ function cmpSemver(a, b) {
 
 // create
 
-export const createLatestVersionAdmin = async (req, res) => {
+exports.createLatestVersionAdmin = async (req, res) => {
   try {
     const data = req.body;
 
@@ -82,7 +82,7 @@ export const createLatestVersionAdmin = async (req, res) => {
 
 // get
 
-export const getLatestVersionAdmin = async (req, res) => {
+exports.getLatestVersionAdmin = async (req, res) => {
   try {
     const doc = await appUpdateModel.findOne();
 
@@ -104,7 +104,7 @@ export const getLatestVersionAdmin = async (req, res) => {
 
 // for user  public
 
-export const userCheckVersion = async (req, res) => {
+exports.userCheckVersion = async (req, res) => {
   try {
     const appVersion = (req.query.appVersion || "").toString().trim();
     if (!appVersion) {

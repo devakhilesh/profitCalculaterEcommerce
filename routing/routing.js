@@ -29,6 +29,9 @@ const bgReplacerRoute = require("../routes/bgChangerRoute");
 
 const userSbscriptionRoute = require("../routes/userSubscribeRoute")
 
+
+const userAppUpdateRoute = require("../routes/checkAppUpdateRoute")
+
 //======================================= routing =======
 
 
@@ -54,5 +57,6 @@ routes.use("/user/amazon/revenue", amazonRevenueCalcRoute);
 
 routes.use("/user/subscription", userSbscriptionRoute);
 
+routes.use("/app/update",userAppUpdateRoute)
 
 module.exports = routes;
