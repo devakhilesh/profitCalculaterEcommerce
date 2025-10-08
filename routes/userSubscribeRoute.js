@@ -15,7 +15,7 @@ const {
 
 const router = express.Router();
 
-router.route("/plans/getAll").get(authentication, getAllSubscriptionUser);
+router.route("/plans/getAll").get(getAllSubscriptionUser);
 
 router
   .route("/payment/create/:subscriptionId")

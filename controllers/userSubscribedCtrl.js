@@ -134,10 +134,6 @@ exports.createPaymentOrder = async (req, res) => {
       isPaymentVerified: false,
     });
 
-    console.log("  payment \n\n:", newPayment);
-
-    console.log("\n\nRazorPay  payment \n\n:", razorpayOrder);
-
     return res.status(201).json({
       status: true,
       message: "Order created successfully",
@@ -387,7 +383,7 @@ exports.verifyPayment = async (req, res) => {
       await payment.save();
 
       ////////////////////////////////////////////
-      console.log("payment success--1", payment);
+      // console.log("payment success--1", payment);
       ///////////////////////////////////////////
 
       return res.status(200).json({
@@ -465,7 +461,7 @@ exports.verifyPayment = async (req, res) => {
       await payment.save();
 
       ////////////////////////////////////////////
-      console.log("payment success--2", payment);
+      // console.log("payment success--2", payment);
       ///////////////////////////////////////////
 
       return res.status(200).json({
