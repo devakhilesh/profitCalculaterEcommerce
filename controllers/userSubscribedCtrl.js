@@ -116,12 +116,11 @@ exports.createPaymentOrder = async (req, res) => {
       },
     });
 
-  //  const razorpayOrder = await razorpayInstance.orders.create({
-  //   amount: Math.round(amountToBePaid * 100),
-  //     currency: "INR",
-  //     receipt: `receipt_subscription${Date.now()}`,
-  //   });
-
+    //  const razorpayOrder = await razorpayInstance.orders.create({
+    //   amount: Math.round(amountToBePaid * 100),
+    //     currency: "INR",
+    //     receipt: `receipt_subscription${Date.now()}`,
+    //   });
 
     const newPayment = await userSubscribedModel.create({
       userId,

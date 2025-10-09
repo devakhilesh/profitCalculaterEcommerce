@@ -6,8 +6,6 @@ const jwt = require("jsonwebtoken");
 const platformModel = require("../models/platformModel");
 const { isValidObjectId } = require("mongoose");
 
-
-
 exports.adminOrUserAuthRegister = async (req, res) => {
   try {
     const data = req.body;
@@ -106,6 +104,140 @@ exports.adminOrUserAuthLogIn = async (req, res) => {
   }
 };
 
+/// signUp from google  for user 
+
+/// logIn with google ///////////
+exports.signInWithGoogle = async (req, res) => {
+  try {
+    const data = req.body;
+    const { email, fcmToken, name, } = data;
+
+    if (!email || !name) {
+      return res
+        .status(400)
+        .json({ status: false, message: "Unable to log in with Google" });
+    }
+
+     data.role = "user"
+    // data.isVerified = true;
+
+    let user = await adminAuthModel.findOne({ email: email });
+    //bcrypt
+
+    // const hashing = bcrypt.hashSync(fcmToken, 10);
+
+    if (!user) {
+      //   data.fcmToken = hashing;
+
+      user = await adminAuthModel.create(data);
+
+       const token = jwt.sign(
+      { _id: user._id, role: user.role },
+      process.env.JWT_SECERET
+    );
+
+      return res.status(200).json({
+        status: true,
+        message: "User created successfully",
+        data: user,
+        token: token,
+      });
+    }
+
+    // let fcmTokenCompare = await bcrypt.compare(fcmToken, user.fcmToken);
+
+    // if (!fcmTokenCompare)
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: "fcmToken is invalid" });
+    // data.fcmToken = hashing;
+
+       const token = jwt.sign(
+      { _id: user._id, role: user.role },
+      process.env.JWT_SECERET
+    );
+
+    await adminAuthModel.findByIdAndUpdate(
+      user._id,
+      { fcmToken: data.fcmToken },
+      { new: true }
+    );
+
+    // let updatefcm;
+
+    // if (user.fcmToken) {
+    //   if (fcmToken) {
+    //     await adminAuthModel.findByIdAndUpdate(
+    //       user._id,
+    //       { fcmToken: fcmToken },
+    //       { new: true }
+    //     );
+    //   }
+    // }
+    // console.log(updatefcm,"fcmToken Updated Successfully")
+
+    return res.status(200).json({
+      status: true,
+      message: "User updated successfully",
+      data: user,
+      token: token,
+    });
+  } catch (error) {
+    return res.status(500).json({ status: false, message: error.message });
+  }
+};
+
+// update
+
+exports.updateUser = async (req, res) => {
+  try {
+    const data = req.body;
+    const userId = req.user._id;
+
+    if (!userId) {
+      return res
+        .status(400)
+        .json({ status: false, message: "UserId is required" });
+    }
+    if (data.name && typeof data.name !== "string") {
+      return res
+        .status(400)
+        .json({ status: false, message: "Name should be a string" });
+    }
+
+    const user = await adminAuthModel.findByIdAndUpdate(
+      userId,
+      { name: data.name },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ status: false, message: "User not found" });
+    }
+
+    return res
+      .status(200)
+      .json({ status: true, message: "User updated successfully", data: user });
+  } catch (error) {
+    return res.status(500).json({ status: false, message: error.message });
+  }
+};
+
+
+// get User Profile
+exports.getProfile = async (req, res) => {
+  try {
+    const getDetails = await adminAuthModel.findById(req.user._id);
+
+    return res
+      .status(200)
+      .json({ status: true, message: "profile", data: getDetails });
+  } catch (err) {
+    return res.status(500).json({ status: false, message: err.message });
+  }
+};
+
+////////=========================================================================================//
 // admin plateform creation
 
 exports.createplateform = async (req, res) => {

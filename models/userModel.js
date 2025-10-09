@@ -9,10 +9,15 @@ const adminAuthSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  
+
   password: {
     type: String,
-    required: true,
+    // required: true,
+  },
+
+  fcmToken: {
+    type: String,
+    default: "",
   },
 
   role: {
