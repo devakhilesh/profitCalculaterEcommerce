@@ -20,7 +20,7 @@ router.route("/logIn").post(adminOrUserAuthLogIn);
 // user signUp with google
 router.route("/signInWithGoogle").post(signInWithGoogle);
 
-router.route("/update").put(updateUser);
+router.route("/update").put(authentication,updateUser);
 
 router.route("/get").get(authentication, getProfile);
 

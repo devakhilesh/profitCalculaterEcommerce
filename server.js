@@ -47,14 +47,13 @@ app.get("/", async (req, res) => {
   return res.send("app is workring completely fine");
 });
 
-const admin = require("./routing/adminRouting")
+const admin = require("./routing/adminRouting");
 
 const routing = require("./routing/routing");
 
 app.use("/", routing);
 
 app.use("/", admin);
-
 
 const port = process.env.PORT;
 
