@@ -1,4 +1,6 @@
 const cloudinary = require("cloudinary").v2;
+const axios = require("axios");
+const { Readable } = require("stream");
 
 /**
  * Upload an image, create an eager derived version with background removal,
@@ -302,5 +304,50 @@ exports.uploadSingleImageBackgroundChanger = async (
         (error.message || String(error)),
       error,
     };
+  }
+};
+
+exports.imageUrlToImageStoreCloudinary = async (responseUrl, folderName) => {
+  try {
+    const imageResponse = await axios.get(responseUrl, {
+      responseType: "arraybuffer",
+    });
+
+    const imageBuffer = Buffer.from(imageResponse.data, "binary");
+    const imageStream = new Readable();
+    imageStream.push(imageBuffer);
+    imageStream.push(null);
+
+    // Upload the image to Cloudinary
+    const uploadResponse = await new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          resource_type: "auto",
+          folder: folderName,
+        },
+        (error, result) => {
+          if (error) {
+            console.error("Cloudinary upload error:", error);
+            reject(new Error("Failed to upload image to Cloudinary"));
+          } else {
+            resolve(result);
+          }
+        }
+      );
+      imageStream.pipe(uploadStream);
+    });
+
+    const imgData = {
+      public_id: uploadResponse.public_id,
+      url: uploadResponse.secure_url,
+    };
+
+    return {
+      status: true,
+      message: "image uploaded on cloudinary successfully",
+      data: imgData,
+    };
+  } catch (err) {
+    return { status: false, message: err.message };
   }
 };

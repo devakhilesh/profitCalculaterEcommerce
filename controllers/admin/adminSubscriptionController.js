@@ -151,7 +151,11 @@ exports.createSubscription = async (req, res) => {
 
     return res
       .status(201)
-      .json({ status: true, message: "Subscription Created Successfully", data:createSubs });
+      .json({
+        status: true,
+        message: "Subscription Created Successfully",
+        data: createSubs,
+      });
   } catch (err) {
     return res.status(500).json({ status: false, message: err.message });
   }
@@ -261,7 +265,8 @@ exports.updateSubscription = async (req, res) => {
 
     const updateSubscription = await SubscriptionModel.findByIdAndUpdate(
       subscriptionId,
-      { ...data },{new:true}
+      { ...data },
+      { new: true }
     );
 
     if (!updateSubscription) {
@@ -273,7 +278,11 @@ exports.updateSubscription = async (req, res) => {
 
     return res
       .status(200)
-      .json({ status: true, message: "Subscription Updated Successfully", data:updateSubscription});
+      .json({
+        status: true,
+        message: "Subscription Updated Successfully",
+        data: updateSubscription,
+      });
   } catch (err) {
     return res.status(500).json({ status: false, message: err.message });
   }
@@ -294,11 +303,11 @@ exports.getAllSubscription = async (req, res) => {
   }
 };
 
-// get All Subscription for user 
+// get All Subscription for user
 
 exports.getAllSubscriptionUser = async (req, res) => {
   try {
-    const getAllSubscription = await SubscriptionModel.find({active:true});
+    const getAllSubscription = await SubscriptionModel.find({ active: true });
     return res.status(200).json({
       status: true,
       message: "All Subscription fetched successfully",

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Image → Image Generator (Upload)</title>
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial; margin: 24px; background:#071022; color:#e6eef8; }
+    .card { max-width:900px; margin:0 auto; background:#061026; padding:20px; border-radius:12px; }
+    label { display:block; margin-top:12px; color:#9ec5ff; }
+    input[type="text"], textarea { width:100%; padding:10px; border-radius:8px; background:#071229; border:1px solid rgba(255,255,255,0.04); color:inherit; }
+    input[type="file"] { margin-top:8px; }
+    button { margin-top:12px; padding:10px 14px; border-radius:8px; border:0; background:#2563eb; color:white; cursor:pointer; }
+    .preview { margin-top:16px; padding:12px; background:#071228; border-radius:8px; }
+    img.generated { max-width:100%; border-radius:8px; display:block; margin-top:10px; }
+    pre { white-space:pre-wrap; max-height:400px; overflow:auto; background:#031026; padding:10px; border-radius:8px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Image → Image Generator (Upload or URL)</h2>
+
+    <form id="genForm">
+      <label>Image (choose file) — or leave empty to use Image URL below</label>
+      <input id="imageFile" name="imageFile" type="file" accept="image/*" />
+
+      <label>OR Image URL</label>
+      <input id="imageUrl" name="image" type="text" placeholder="https://..." />
+
+      <label>Prompt</label>
+      <textarea id="prompt" name="prompt">Generate a close-up image of a dog lying on lush grass.</textarea>
+
+      <button type="submit">Generate</button>
+    </form>
+
+    <div class="preview" id="preview" style="display:none;">
+      <div id="status">Waiting...</div>
+      <div id="imageWrap"></div>
+      <div id="raw"></div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('genForm');
+    const preview = document.getElementById('preview');
+    const status = document.getElementById('status');
+    const imageWrap = document.getElementById('imageWrap');
+    const raw = document.getElementById('raw');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      preview.style.display = 'block';
+      imageWrap.innerHTML = ''; raw.innerHTML = '';
+      status.textContent = 'Uploading & generating... (may take seconds)';
+
+      const fd = new FormData(form);
+      // If user left file blank, but provided URL, that URL will be sent as 'image' field
+      try {
+        const resp = await fetch('/user/enhanced/imgtoimg', {
+          method: 'POST',
+          body: fd
+        });
+        const data = await resp.json();
+        if (!resp.ok || data.success === false) {
+          status.textContent = 'Failed';
+          raw.innerHTML = `<pre>${JSON.stringify(data.error || data, null, 2)}</pre>`;
+          return;
+        }
+        const url = data.extractedUrl || (data.raw && (data.raw.data?.[0]?.url || data.raw.output?.[0]?.url)) || null;
+        if (url) {
+          const img = document.createElement('img');
+          img.className = 'generated';
+          img.src = url;
+          imageWrap.appendChild(img);
+          status.textContent = 'Done — image loaded from URL';
+          raw.innerHTML = `<div style="margin-top:10px;color:#9ec5ff">${url}</div><pre>${JSON.stringify(data.raw || data, null, 2)}</pre>`;
+        } else {
+          status.textContent = 'No URL in response — showing raw';
+          raw.innerHTML = `<pre>${JSON.stringify(data.raw || data, null, 2)}</pre>`;
+        }
+      } catch (err) {
+        status.textContent = 'Error';
+        raw.innerHTML = `<pre>${String(err)}</pre>`;
+      }
+    });
+  </script>
+</body>
+</html>

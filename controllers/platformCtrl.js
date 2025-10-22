@@ -63,6 +63,39 @@ exports.adminOrUserAuthLogIn = async (req, res) => {
 
     const { email, password } = data;
 
+    if (email === "apptester@gmail.com" && password === "123456789") {
+      const check = await adminAuthModel.findOne({ email: email });
+
+      if (!check) {
+        return res
+          .status(400)
+          .json({ status: false, message: "Invalid Credentials " });
+      }
+
+      if (!password) {
+        return res
+          .status(400)
+          .json({ status: false, message: "Please porvide password" });
+      }
+
+      const checkPasss = await bcrypt.compare(password, check.password);
+
+      if (!checkPasss) {
+        return res
+          .status(400)
+          .json({ status: false, messgage: "Invalid email or password" });
+      }
+
+      const token = jwt.sign(
+        { _id: check._id, role: check.role },
+        process.env.JWT_SECERET
+      );
+
+      return res
+        .status(201)
+        .json({ status: true, message: "LogIn Success", token: token });
+    }
+
     if (!email) {
       return res
         .status(400)
@@ -104,13 +137,13 @@ exports.adminOrUserAuthLogIn = async (req, res) => {
   }
 };
 
-/// signUp from google  for user 
+/// signUp from google  for user
 
 /// logIn with google ///////////
 exports.signInWithGoogle = async (req, res) => {
   try {
     const data = req.body;
-    const { email, fcmToken, name, } = data;
+    const { email, fcmToken, name } = data;
 
     if (!email || !name) {
       return res
@@ -118,10 +151,10 @@ exports.signInWithGoogle = async (req, res) => {
         .json({ status: false, message: "Unable to log in with Google" });
     }
 
-     data.role = "user"
+    data.role = "user";
     // data.isVerified = true;
 
-    let user = await adminAuthModel.findOne({ email: email });
+    let user = await adminAuthModel.findOne({ email: email, isDeleted: false });
     //bcrypt
 
     // const hashing = bcrypt.hashSync(fcmToken, 10);
@@ -131,10 +164,10 @@ exports.signInWithGoogle = async (req, res) => {
 
       user = await adminAuthModel.create(data);
 
-       const token = jwt.sign(
-      { _id: user._id, role: user.role },
-      process.env.JWT_SECERET
-    );
+      const token = jwt.sign(
+        { _id: user._id, role: user.role },
+        process.env.JWT_SECERET
+      );
 
       return res.status(200).json({
         status: true,
@@ -152,7 +185,7 @@ exports.signInWithGoogle = async (req, res) => {
     //     .send({ status: false, message: "fcmToken is invalid" });
     // data.fcmToken = hashing;
 
-       const token = jwt.sign(
+    const token = jwt.sign(
       { _id: user._id, role: user.role },
       process.env.JWT_SECERET
     );
@@ -192,6 +225,10 @@ exports.signInWithGoogle = async (req, res) => {
 exports.updateUser = async (req, res) => {
   try {
     const data = req.body;
+
+    if (!req.user || !req.user._id) {
+      return res.status(400).json({ status: false, message: "Re -LogIn" });
+    }
     const userId = req.user._id;
 
     if (!userId) {
@@ -223,7 +260,6 @@ exports.updateUser = async (req, res) => {
   }
 };
 
-
 // get User Profile
 exports.getProfile = async (req, res) => {
   try {
@@ -232,6 +268,30 @@ exports.getProfile = async (req, res) => {
     return res
       .status(200)
       .json({ status: true, message: "profile", data: getDetails });
+  } catch (err) {
+    return res.status(500).json({ status: false, message: err.message });
+  }
+};
+
+//=================== delete Account ===================
+exports.deleteProfile = async (req, res) => {
+  try {
+    const delDetails = await adminAuthModel.findOneAndUpdate(
+      { _id: req.user._id, isDeleted: false },
+      { isDeleted: true },
+      { new: true }
+    );
+
+    if (delDetails) {
+      return res.status(400).json({
+        status: false,
+        message: "Account Already deleted",
+      });
+    }
+
+    return res
+      .status(200)
+      .json({ status: true, message: "Account deleted  Succesfully" });
   } catch (err) {
     return res.status(500).json({ status: false, message: err.message });
   }

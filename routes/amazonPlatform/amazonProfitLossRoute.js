@@ -1,6 +1,9 @@
 const express = require("express");
 
-const { authentication } = require("../../middi/userAuth");
+const {
+  authentication,
+  checkSubscriptionMiddi,
+} = require("../../middi/userAuth");
 const {
   createAmazonProfitLossCalc,
   updateAmazonProfitLossCalc,
@@ -13,11 +16,11 @@ const router = express.Router();
 
 router
   .route("/create/:platformId")
-  .post(authentication, createAmazonProfitLossCalc);
+  .post(authentication, checkSubscriptionMiddi, createAmazonProfitLossCalc);
 
 router
   .route("/update/:ProfitLossCalcId")
-  .put(authentication, updateAmazonProfitLossCalc);
+  .put(authentication, checkSubscriptionMiddi, updateAmazonProfitLossCalc);
 
 router
   .route("/getAll/:platformId")

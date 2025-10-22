@@ -65,7 +65,7 @@ exports.createLatestVersionAdmin = async (req, res) => {
         platform: "android",
         latestVersion: latestVersion,
         downloadLink: downloadLink,
-        disclaimer: "",
+        disclaimer: data.disclaimer,
       },
       { new: true, upsert: true, setDefaultsOnInsert: true }
     );

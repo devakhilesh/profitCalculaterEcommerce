@@ -24,16 +24,17 @@ const bgRemoverRoute = require("../routes/bgRemoverRoute");
 
 const bgReplacerRoute = require("../routes/bgChangerRoute");
 
+const imgToimgEnhancedRoute = require("../routes/imgEnhenceRoute");
 
-// subscription 
+const imgToimgVariation = require("../routes/imageVariationRoute");
 
-const userSbscriptionRoute = require("../routes/userSubscribeRoute")
+// subscription
 
+const userSbscriptionRoute = require("../routes/userSubscribeRoute");
 
-const userAppUpdateRoute = require("../routes/checkAppUpdateRoute")
+const userAppUpdateRoute = require("../routes/checkAppUpdateRoute");
 
 //======================================= routing =======
-
 
 routes.use("/auth", authRoute);
 
@@ -47,6 +48,10 @@ routes.use("/user/bgRemover", bgRemoverRoute);
 
 routes.use("/user/bgReplacement", bgReplacerRoute);
 
+routes.use("/user/enhanced", imgToimgEnhancedRoute);
+
+routes.use("/user", imgToimgVariation);
+
 routes.use("/amazon/helper", amazonSellingPriceHelperRoute);
 
 routes.use("/user/amazon/sellingPrice", amazonSellingprice);
@@ -57,6 +62,6 @@ routes.use("/user/amazon/revenue", amazonRevenueCalcRoute);
 
 routes.use("/user/subscription", userSbscriptionRoute);
 
-routes.use("/app/update",userAppUpdateRoute)
+routes.use("/app/update", userAppUpdateRoute);
 
 module.exports = routes;

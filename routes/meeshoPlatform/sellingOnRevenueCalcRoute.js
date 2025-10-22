@@ -1,6 +1,6 @@
 const express = require("express");
 
-const { authentication } = require("../../middi/userAuth");
+const { authentication, checkSubscriptionMiddi } = require("../../middi/userAuth");
 const {
   createSellingHistory,
   updateSellingHistory,
@@ -11,11 +11,11 @@ const {
 
 const router = express.Router();
 
-router.route("/create/:platformId").post(authentication, createSellingHistory);
+router.route("/create/:platformId").post(authentication,checkSubscriptionMiddi, createSellingHistory);
 
 router
   .route("/update/:sellingHistoryId")
-  .put(authentication, updateSellingHistory);
+  .put(authentication,checkSubscriptionMiddi, updateSellingHistory);
 
 router.route("/getAll/:platformId").get(authentication, getAllSellingHistory);
 

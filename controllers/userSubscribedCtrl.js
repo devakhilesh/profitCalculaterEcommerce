@@ -644,11 +644,28 @@ exports.getAllSubscriptionHistory = async (req, res) => {
 
 exports.checkSubscription = async (req, res) => {
   try {
+    //==================== dummy ================
+    return res.status(200).json({
+      status: true,
+      isActive: true,
+      message: "Subscription is active",
+    });
+
+    //====================dummy====================
+
     const userId = req.user && req.user._id;
     if (!userId)
       return res.status(401).json({ status: false, message: "Unauthorized" });
 
     const now = nowIST();
+    // for tester play console
+    if (userId.toString() === "68e9f1cd0c024c983210f1f8") {
+      return res.status(200).json({
+        status: true,
+        isActive: true,
+        message: "Subscription is active",
+      });
+    }
 
     // Find the latest successful (verified) subscription record (most recent expiry first)
     const latestSuccess = await userSubscribedModel

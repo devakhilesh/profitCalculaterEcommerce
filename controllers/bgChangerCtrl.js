@@ -41,7 +41,7 @@ exports.replaceBackground = async (req, res) => {
       });
     }
 
-    console.log("kkkkkk",uploadRes)
+    console.log("kkkkkk", uploadRes);
 
     // prepare DB doc
     const data = {
@@ -99,7 +99,9 @@ exports.deleteReplacedImage = async (req, res) => {
     const userId = req.user._id;
     const imageId = req.params.imageId;
     if (!imageId)
-      return res.status(400).json({ status: false, message: "imageId required" });
+      return res
+        .status(400)
+        .json({ status: false, message: "imageId required" });
 
     const doc = await BgChangerModel.findOneAndDelete({ _id: imageId, userId });
     if (!doc)

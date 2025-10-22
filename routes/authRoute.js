@@ -8,6 +8,7 @@ const {
   signInWithGoogle,
   updateUser,
   getProfile,
+  deleteProfile,
 } = require("../controllers/platformCtrl");
 const { authentication } = require("../middi/userAuth");
 
@@ -20,9 +21,13 @@ router.route("/logIn").post(adminOrUserAuthLogIn);
 // user signUp with google
 router.route("/signInWithGoogle").post(signInWithGoogle);
 
-router.route("/update").put(authentication,updateUser);
+router.route("/update").put(authentication, updateUser);
 
 router.route("/get").get(authentication, getProfile);
+
+
+router.route("/delete").put(authentication,deleteProfile)
+
 
 module.exports = router;
 
