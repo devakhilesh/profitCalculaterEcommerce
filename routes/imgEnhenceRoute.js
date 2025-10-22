@@ -8,7 +8,7 @@ const { authentication } = require("../middi/userAuth");
 
 const router = express.Router();
 
-router.route("/imgtoimg").post(imgToimgEnhancer);
+router.route("/imgtoimg").post( imgToimgEnhancer);
 router.route("/imgtoimg/getAll").get(authentication, getAllEnhancedImages);
 router
   .route("/imgtoimg/delete/:imageId")
@@ -17,10 +17,11 @@ router
 module.exports = router;
 
 /* 
-
 complete route is
+
 base +/user/enhanced/imgtoimg
 base +/user/enhanced/imgtoimg/getAll
 base +/user/enhanced/delete/imgtoimg/:imageId
+
 
 */

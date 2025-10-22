@@ -1,8 +1,15 @@
-const express = require("express")
-const { imgToimgVariations } = require("../controllers/variationImageCtrl")
+const express = require("express");
+const { imgToimgVariations } = require("../controllers/variationImageCtrl");
+const { authentication } = require("../middi/userAuth");
 
-const router = express.Router()
+const router = express.Router();
 
-router.route("/imgVariation").post(imgToimgVariations)
+router.route("/imgVariation").post(authentication,imgToimgVariations);
 
-module.exports= router
+module.exports = router;
+
+
+
+/* 
+base+/user/imgVariation
+*/

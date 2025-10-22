@@ -13,18 +13,7 @@ exports.imgToimgVariations = async (req, res) => {
   try {
     // Prefer uploaded file if provided
     // Use optional chaining / defensive reads so we don't try to access .image on undefined
-    let imageField =
-      (req.body && req.body.image) || (req.query && req.query.image) || null;
-
-    // debug: log presence of body/query/files (remove in production)
-    console.log(
-      "req.body exists:",
-      !!req.body,
-      "req.query exists:",
-      !!req.query,
-      "req.files exists:",
-      !!req.files
-    );
+    let imageField = req.body?.image || null;
 
     if (req.files && req.files.imageFile) {
       const file = req.files.imageFile;
@@ -142,6 +131,8 @@ exports.imgToimgVariations = async (req, res) => {
       raw: arkResp.data,
     };
 
+    // wallet diduction logic 
+
     return res.json({
       status: true,
       message: "Generated variations successfully",
@@ -159,7 +150,6 @@ exports.imgToimgVariations = async (req, res) => {
 };
 
 // save selected image //
-
 /* exports.imgToimgVariations = async (req, res) => {
   try {
     const data = req.body;

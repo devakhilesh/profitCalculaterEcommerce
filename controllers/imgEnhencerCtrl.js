@@ -20,19 +20,17 @@ exports.imgToimgEnhancer = async (req, res) => {
     // console.log("req.files (raw):", req.files);
     // console.log("req.body (raw):", req.body);
 
-
-    const prompt =
+let prompt = req.body?.prompt;
+if(!prompt){
+  prompt =
       "Enhance the provided image to ultra-high definition, improving clarity, sharpness, color balance, and lighting while preserving natural details and realistic texture. Input image equal to enhanced Input image content will remain same";
-
+}
     // Prefer uploaded file if provided
    let imageField = req.body?.image || null;
-
-console.log("files", req.files)
 
     if (req.files && req.files.imageFile) {
       // express-fileupload gives us a file object
       const file = req.files.imageFile;
-            console.log(file)
 
       // validate mimetype if desired
       if (!/^image\//.test(file.mimetype)) {
