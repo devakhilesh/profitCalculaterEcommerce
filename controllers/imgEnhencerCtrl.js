@@ -13,11 +13,8 @@ if (!ARK_KEY) console.warn("ARK_API_KEY not set in .env");
 
 exports.imgToimgEnhancer = async (req, res) => {
   try {
-    const data = req.body;
-    const userId = req.user._id; //68d54820adc63cdbb0c9bb4b
-    // const userId = "68d54820adc63cdbb0c9bb4b"
-
     const prompt =
+      req.body.prompt ||
       "Enhance the provided image to ultra-high definition, improving clarity, sharpness, color balance, and lighting while preserving natural details and realistic texture. Input image equal to enhanced Input image content will remain same";
 
     // Prefer uploaded file if provided
@@ -62,7 +59,7 @@ exports.imgToimgEnhancer = async (req, res) => {
       timeout: 120000,
     });
 
-    console.log("arkResp:=\n\n", arkResp.data);
+    // console.log("arkResp:=\n\n", arkResp.data);
 
     const maybeUrl = findFirstUrl(arkResp.data) || null;
 
@@ -83,32 +80,32 @@ exports.imgToimgEnhancer = async (req, res) => {
       });
     }
 
-    res.json({
+    return res.json({
       status: true,
       message: "Enhenced Successfully",
       data: resp,
     });
 
-    const cloudinaryStore = await imageUrlToImageStoreCloudinary(
-      resp.extractedUrl,
-      "EnhancedImage"
-    );
+    // const cloudinaryStore = await imageUrlToImageStoreCloudinary(
+    //   resp.extractedUrl,
+    //   "EnhancedImage"
+    // );
 
-    if (cloudinaryStore.status) {
-      console.log("stored succesfully");
-      //   console.log(cloudinaryStore.data);
+    // if (cloudinaryStore.status) {
+    //   console.log("stored succesfully");
+    //   //   console.log(cloudinaryStore.data);
 
-      data.userId = userId;
-      data.featureType = "Image Enhancer";
-      data.enhanced_img = cloudinaryStore.data;
+    //   data.userId = userId;
+    //   data.featureType = "Image Enhancer";
+    //   data.enhanced_img = cloudinaryStore.data;
 
-      const save = await ImageEnhancerModel.create(data);
+    //   const save = await ImageEnhancerModel.create(data);
 
-      console.log("storedData :", save);
-    } else {
-      console.log("there is issue facing from cloudinary!!!");
-      console.log("error Cloudinary\n\n:", cloudinaryStore);
-    }
+    //   console.log("storedData :", save);
+    // } else {
+    //   console.log("there is issue facing from cloudinary!!!");
+    //   console.log("error Cloudinary\n\n:", cloudinaryStore);
+    // }
     // will preform some db action actions ...
   } catch (err) {
     const status = err.response ? err.response.status : 500;
