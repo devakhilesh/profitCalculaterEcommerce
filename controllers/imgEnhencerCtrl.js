@@ -14,7 +14,6 @@ if (!ARK_KEY) console.warn("ARK_API_KEY not set in .env");
 exports.imgToimgEnhancer = async (req, res) => {
   try {
     const prompt =
-      req.body.prompt ||
       "Enhance the provided image to ultra-high definition, improving clarity, sharpness, color balance, and lighting while preserving natural details and realistic texture. Input image equal to enhanced Input image content will remain same";
 
     // Prefer uploaded file if provided
