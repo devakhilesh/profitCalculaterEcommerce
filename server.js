@@ -23,6 +23,11 @@ app.use(fileUpload({
   createParentPath: true
 }));
 
+app.use(express.json({ limit: "50mb" }));
+
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+
+
 // cloudinary
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,

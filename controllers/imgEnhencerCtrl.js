@@ -13,15 +13,27 @@ if (!ARK_KEY) console.warn("ARK_API_KEY not set in .env");
 
 exports.imgToimgEnhancer = async (req, res) => {
   try {
+
+    // console.log("=== imgToimgEnhancer called ===");
+    // console.log("req.is(multipart):", req.is("multipart/form-data"));
+    // console.log("req.headers['content-type']:", req.headers && req.headers['content-type']);
+    // console.log("req.files (raw):", req.files);
+    // console.log("req.body (raw):", req.body);
+
+
     const prompt =
       "Enhance the provided image to ultra-high definition, improving clarity, sharpness, color balance, and lighting while preserving natural details and realistic texture. Input image equal to enhanced Input image content will remain same";
 
     // Prefer uploaded file if provided
-    let imageField = req.body.image || req.query.image || null;
+   let imageField = req.body?.image || null;
+
+console.log("files", req.files)
 
     if (req.files && req.files.imageFile) {
       // express-fileupload gives us a file object
       const file = req.files.imageFile;
+            console.log(file)
+
       // validate mimetype if desired
       if (!/^image\//.test(file.mimetype)) {
         return res
