@@ -91,12 +91,6 @@ exports.createRecharge = async (req, res) => {
       data: {
         payment: newPayment,
         razorpayOrder,
-        expectedRecharge: {
-          start: start,
-          end: expectedEnd,
-          durationDays,
-          amountToBePaid,
-        },
       },
     });
   } catch (err) {
