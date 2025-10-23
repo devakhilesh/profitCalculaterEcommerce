@@ -12,6 +12,11 @@ const razorpayInstance = new Razorpay({
   key_secret: process.env.RAZORPAY_API_SECRET,
 });
 
+function nowIST() {
+  const nowUTC = new Date();
+  const IST_OFFSET = 5.5 * 60 * 60 * 1000;
+  return new Date(nowUTC.getTime() + IST_OFFSET);
+}
 // get all recharge data
 
 exports.getAllAiRechargeDataUser = async (req, res) => {
