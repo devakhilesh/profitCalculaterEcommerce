@@ -1,9 +1,9 @@
+const BgChangerModel = require("../../models/aiModels/bgChangerModel");
 const {
   uploadSingleImageBackgroundChanger,
   deleteSingleImage,
-} = require("../utils/backgroundRemover");
+} = require("../../utils/backgroundRemover");
 
-const BgChangerModel = require("../models/bgChangerModel");
 
 // Upload & replace background
 exports.replaceBackground = async (req, res) => {

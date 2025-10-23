@@ -1,11 +1,11 @@
 const axios = require("axios");
-const { findFirstUrl } = require("../utils/imageEnhencer");
+const { findFirstUrl } = require("../../utils/imageEnhencer");
 const {
   imageUrlToImageStoreCloudinary,
   deleteSingleImage,
-} = require("../utils/backgroundRemover");
+} = require("../../utils/backgroundRemover");
 const { Readable } = require("stream");
-const ImageEnhancerModel = require("../models/imageEnhencerModel");
+const ImageEnhancerModel = require("../../models/aiModels/imageEnhencerModel");
 const ARK_URL =
   "https://ark.ap-southeast.bytepluses.com/api/v3/images/generations";
 const ARK_KEY = process.env.ARK_API_KEY;
@@ -13,20 +13,19 @@ if (!ARK_KEY) console.warn("ARK_API_KEY not set in .env");
 
 exports.imgToimgEnhancer = async (req, res) => {
   try {
-
     // console.log("=== imgToimgEnhancer called ===");
     // console.log("req.is(multipart):", req.is("multipart/form-data"));
     // console.log("req.headers['content-type']:", req.headers && req.headers['content-type']);
     // console.log("req.files (raw):", req.files);
     // console.log("req.body (raw):", req.body);
 
-let prompt = req.body?.prompt;
-if(!prompt){
-  prompt =
-      "Enhance the provided image to ultra-high definition, improving clarity, sharpness, color balance, and lighting while preserving natural details and realistic texture. Input image equal to enhanced Input image content will remain same";
-}
+    let prompt = req.body?.prompt;
+    if (!prompt) {
+      prompt =
+        "Enhance the provided image to ultra-high definition, improving clarity, sharpness, color balance, and lighting while preserving natural details and realistic texture. Input image equal to enhanced Input image content will remain same";
+    }
     // Prefer uploaded file if provided
-   let imageField = req.body?.image || null;
+    let imageField = req.body?.image || null;
 
     if (req.files && req.files.imageFile) {
       // express-fileupload gives us a file object

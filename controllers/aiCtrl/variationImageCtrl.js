@@ -1,7 +1,7 @@
 const axios = require("axios");
 const {
   imageUrlToImageStoreCloudinary,
-} = require("../utils/backgroundRemover");
+} = require("../../utils/backgroundRemover");
 
 const ARK_URL =
   "https://ark.ap-southeast.bytepluses.com/api/v3/images/generations";
@@ -131,7 +131,7 @@ exports.imgToimgVariations = async (req, res) => {
       raw: arkResp.data,
     };
 
-    // wallet diduction logic 
+    // wallet diduction logic
 
     return res.json({
       status: true,

@@ -9,7 +9,7 @@ const {
   updateUser,
   getProfile,
   deleteProfile,
-} = require("../controllers/platformCtrl");
+} = require("../controllers/user/platformCtrl");
 const { authentication } = require("../middi/userAuth");
 
 const router = express.Router();
@@ -25,9 +25,7 @@ router.route("/update").put(authentication, updateUser);
 
 router.route("/get").get(authentication, getProfile);
 
-
-router.route("/delete").put(authentication,deleteProfile)
-
+router.route("/delete").put(authentication, deleteProfile);
 
 module.exports = router;
 

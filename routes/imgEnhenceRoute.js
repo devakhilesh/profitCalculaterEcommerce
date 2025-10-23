@@ -3,12 +3,12 @@ const {
   getAllEnhancedImages,
   deleteEnhancedImage,
   imgToimgEnhancer,
-} = require("../controllers/imgEnhencerCtrl");
+} = require("../controllers/aiCtrl/imgEnhencerCtrl");
 const { authentication } = require("../middi/userAuth");
 
 const router = express.Router();
 
-router.route("/imgtoimg").post( imgToimgEnhancer);
+router.route("/imgtoimg").post(imgToimgEnhancer);
 router.route("/imgtoimg/getAll").get(authentication, getAllEnhancedImages);
 router
   .route("/imgtoimg/delete/:imageId")

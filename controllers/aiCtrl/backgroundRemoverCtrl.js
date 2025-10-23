@@ -1,8 +1,6 @@
-const BackgroundRemoverModel = require("../models/bgRemoverModel");
-const {
-  uploadSingleImageBackgroundRemover,
-  deleteSingleImage,
-} = require("../utils/backgroundRemover");
+const BackgroundRemoverModel = require("../../models/aiModels/bgRemoverModel");
+const { uploadSingleImageBackgroundRemover, deleteSingleImage } = require("../../utils/backgroundRemover");
+
 
 /* 
 

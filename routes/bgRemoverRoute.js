@@ -1,11 +1,12 @@
 const express = require("express");
 const { authentication, userAuthorization, checkSubscriptionMiddi } = require("../middi/userAuth");
+
 const {
   removeBackground,
   getAllBackgroundRemovedImages,
   deleteBackgroundRemovedImage,
-} = require("../controllers/backgroundRemoverCtrl");
-const { replaceBackground } = require("../controllers/bgChangerCtrl");
+} = require("../controllers/aiCtrl/backgroundRemoverCtrl");
+
 
 const router = express.Router();
 

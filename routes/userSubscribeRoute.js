@@ -11,7 +11,7 @@ const {
   checkSubscription,
   getRazorpayPublicKey,
   verifyPayment,
-} = require("../controllers/userSubscribedCtrl");
+} = require("../controllers/user/userSubscribedCtrl");
 
 const router = express.Router();
 

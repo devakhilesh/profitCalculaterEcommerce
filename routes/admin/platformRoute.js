@@ -5,7 +5,7 @@ const {
   updatePlateform,
   deletePlateform,
   getAll,
-} = require("../../controllers/platformCtrl");
+} = require("../../controllers/user/platformCtrl");
 
 const router = express.Router();
 

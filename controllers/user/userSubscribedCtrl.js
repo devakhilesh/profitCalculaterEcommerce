@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 const { isValidObjectId } = mongoose;
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
-const userSubscribedModel = require("../models/userSubscribedMode");
-const SubscriptionModel = require("../models/adminModel/adminSubscriptionModel");
+const userSubscribedModel = require("../../models/userModel/userSubscribedMode");
+const SubscriptionModel = require("../../models/adminModel/adminSubscriptionModel");
 
 // Razorpay instance
 const razorpayInstance = new Razorpay({

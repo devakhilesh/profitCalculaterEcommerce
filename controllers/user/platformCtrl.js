@@ -1,9 +1,9 @@
-const adminAuthModel = require("../models/userModel");
+const adminAuthModel = require("../../models/userModel/userModel");
 
 const bcrypt = require("bcryptjs");
 
 const jwt = require("jsonwebtoken");
-const platformModel = require("../models/platformModel");
+const platformModel = require("../../models/adminModel/platformModel");
 const { isValidObjectId } = require("mongoose");
 
 exports.adminOrUserAuthRegister = async (req, res) => {

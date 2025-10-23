@@ -1,7 +1,7 @@
-const userAuthModel = require("../models/userModel");
+const userAuthModel = require("../models/userModel/userModel");
 
 const jwt = require("jsonwebtoken");
-const userSubscribedModel = require("../models/userSubscribedMode");
+const userSubscribedModel = require("../models/userModel/userSubscribedMode");
 
 function nowIST() {
   const nowUTC = new Date();
@@ -15,7 +15,7 @@ function daysDiff(fromDate, toDate) {
 }
 
 // user Authentication
-9
+9;
 exports.authentication = async (req, res, next) => {
   try {
     const token = req.headers["x-auth-token"];
@@ -180,6 +180,3 @@ exports.checkSubscriptionMiddi = async (req, res, next) => {
     return res.status(500).json({ status: false, message: err.message });
   }
 };
-
-
-
