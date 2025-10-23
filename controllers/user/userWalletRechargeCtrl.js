@@ -69,7 +69,7 @@ exports.createRecharge = async (req, res) => {
       currency: "INR",
       receipt: `receipt_recharge_ai${Date.now()}`,
       notes: {
-        rechargeId: subscriptionId.toString(),
+        rechargeId: rechargeId.toString(),
         userId: userId.toString(),
       },
     });
@@ -91,7 +91,7 @@ exports.createRecharge = async (req, res) => {
       data: {
         payment: newPayment,
         razorpayOrder,
-        expectedSubscription: {
+        expectedRecharge: {
           start: start,
           end: expectedEnd,
           durationDays,
