@@ -1,8 +1,8 @@
 const express = require("express");
 
 
-const { userCheckVersion } = require("../controllers/admin/adminAppUpdateCtrl");
-const { authentication } = require("../middi/userAuth");
+const { userCheckVersion } = require("../../controllers/admin/adminAppUpdateCtrl");
+const { authentication } = require("../../middi/userAuth");
 
 const router = express.Router();
 

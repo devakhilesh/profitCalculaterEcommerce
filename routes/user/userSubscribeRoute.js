@@ -1,9 +1,9 @@
 const express = require("express");
-const { authentication, userAuthorization } = require("../middi/userAuth");
+const { authentication, userAuthorization } = require("../../middi/userAuth");
 const {
   getAllSubscription,
   getAllSubscriptionUser,
-} = require("../controllers/admin/adminSubscriptionController");
+} = require("../../controllers/admin/adminSubscriptionController");
 const {
   createPaymentOrder,
   getSingleSubscriptionHistory,
@@ -11,7 +11,7 @@ const {
   checkSubscription,
   getRazorpayPublicKey,
   verifyPayment,
-} = require("../controllers/user/userSubscribedCtrl");
+} = require("../../controllers/user/userSubscribedCtrl");
 
 const router = express.Router();
 

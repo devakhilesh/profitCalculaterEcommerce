@@ -9,8 +9,8 @@ const {
   updateUser,
   getProfile,
   deleteProfile,
-} = require("../controllers/user/platformCtrl");
-const { authentication } = require("../middi/userAuth");
+} = require("../../controllers/user/platformCtrl");
+const { authentication } = require("../../middi/userAuth");
 
 const router = express.Router();
 

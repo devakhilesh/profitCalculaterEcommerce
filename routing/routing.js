@@ -2,7 +2,7 @@ const express = require("express");
 
 const routes = express();
 
-const authRoute = require("../routes/authRoute");
+const authRoute = require("../routes/user/authRoute");
 
 const PlatformRoute = require("../routes/admin/platformRoute");
 
@@ -20,19 +20,23 @@ const amazonProfitLossCalcRoute = require("../routes/amazonPlatform/amazonProfit
 
 const amazonRevenueCalcRoute = require("../routes/amazonPlatform/amazonRevenueRoute");
 
-const bgRemoverRoute = require("../routes/bgRemoverRoute");
+const bgRemoverRoute = require("../routes/user/bgRemoverRoute");
 
-const bgReplacerRoute = require("../routes/bgChangerRoute");
+const bgReplacerRoute = require("../routes/user/bgChangerRoute");
 
-const imgToimgEnhancedRoute = require("../routes/imgEnhenceRoute");
+const imgToimgEnhancedRoute = require("../routes/user/imgEnhenceRoute");
 
-const imgToimgVariation = require("../routes/imageVariationRoute");
+const imgToimgVariation = require("../routes/user/imageVariationRoute");
 
 // subscription
 
-const userSbscriptionRoute = require("../routes/userSubscribeRoute");
+const userSbscriptionRoute = require("../routes/user/userSubscribeRoute");
 
-const userAppUpdateRoute = require("../routes/checkAppUpdateRoute");
+const userAppUpdateRoute = require("../routes/user/checkAppUpdateRoute");
+
+// ai recharge 
+
+const userAiRechargeRoute = require("../routes/user/userAiRechargeRoute")
 
 //======================================= routing =======
 
@@ -63,5 +67,7 @@ routes.use("/user/amazon/revenue", amazonRevenueCalcRoute);
 routes.use("/user/subscription", userSbscriptionRoute);
 
 routes.use("/app/update", userAppUpdateRoute);
+
+routes.use("/user/ai", userAiRechargeRoute);
 
 module.exports = routes;

@@ -5,6 +5,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const platformModel = require("../../models/adminModel/platformModel");
 const { isValidObjectId } = require("mongoose");
+const userAIWalletModel = require("../../models/userModel/userWalletModel");
 
 exports.adminOrUserAuthRegister = async (req, res) => {
   try {
@@ -195,6 +196,12 @@ exports.signInWithGoogle = async (req, res) => {
       { fcmToken: data.fcmToken },
       { new: true }
     );
+
+    const checkWallet = await userAIWalletModel.findOne({ userId: user._id });
+
+    if (!checkWallet) {
+      await userAIWalletModel.create({ userId: user._id, credit: 0 });
+    }
 
     // let updatefcm;
 

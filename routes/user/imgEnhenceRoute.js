@@ -3,8 +3,8 @@ const {
   getAllEnhancedImages,
   deleteEnhancedImage,
   imgToimgEnhancer,
-} = require("../controllers/aiCtrl/imgEnhencerCtrl");
-const { authentication } = require("../middi/userAuth");
+} = require("../../controllers/aiCtrl/imgEnhencerCtrl");
+const { authentication } = require("../../middi/userAuth");
 
 const router = express.Router();
 

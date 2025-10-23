@@ -1,8 +1,8 @@
 const express = require("express");
 const {
   imgToimgVariations,
-} = require("../controllers/aiCtrl/variationImageCtrl");
-const { authentication } = require("../middi/userAuth");
+} = require("../../controllers/aiCtrl/variationImageCtrl");
+const { authentication } = require("../../middi/userAuth");
 
 const router = express.Router();
 
