@@ -170,6 +170,19 @@ exports.signInWithGoogle = async (req, res) => {
         process.env.JWT_SECERET
       );
 
+      const checkWallet = await userAIWalletModel.findOne({ userId: user._id });
+
+      console.log("checkWallet1", checkWallet);
+
+      if (!checkWallet) {
+        let dd = await userAIWalletModel.create({
+          userId: user._id,
+          credit: 0,
+        });
+
+        console.log("created Wallet1", dd);
+      }
+
       return res.status(200).json({
         status: true,
         message: "User created successfully",
@@ -197,16 +210,14 @@ exports.signInWithGoogle = async (req, res) => {
       { new: true }
     );
 
-    const checkWallet = await userAIWalletModel.findOne({ userId:user._id });
+    const checkWallet = await userAIWalletModel.findOne({ userId: user._id });
 
-    console.log("checkWallet", checkWallet)
+    console.log("checkWallet2", checkWallet);
 
     if (!checkWallet) {
-     let dd = await userAIWalletModel.create({ userId:user._id, credit: 0 });
+      let dd = await userAIWalletModel.create({ userId: user._id, credit: 0 });
 
-     console.log("created Wallet",dd)
-
-
+      console.log("created Wallet2", dd);
     }
 
     // let updatefcm;
