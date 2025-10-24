@@ -155,7 +155,7 @@ exports.signInWithGoogle = async (req, res) => {
     data.role = "user";
     // data.isVerified = true;
 
-    let user = await adminAuthModel.findOne({ email: email, isDeleted: false });
+    let user = await adminAuthModel.findOne({ email: email});
     //bcrypt
 
     // const hashing = bcrypt.hashSync(fcmToken, 10);
