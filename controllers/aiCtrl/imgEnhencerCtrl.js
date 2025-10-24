@@ -15,7 +15,7 @@ if (!ARK_KEY) console.warn("ARK_API_KEY not set in .env");
 exports.imgToimgEnhancer = async (req, res) => {
   try {
     if (!req.user || !req.user._id) {
-      return res.status(400).json({ status: false, message: "Re -LogIn" });
+      return res.status(400).json({ status: false, message: "Auth Required" });
     }
 
     const wallet = await userAIWalletModel.findOne({ userId: req.user._id });

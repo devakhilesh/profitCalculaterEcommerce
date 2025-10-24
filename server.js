@@ -17,16 +17,17 @@ app.use(cors());
 //   })
 // );
 
-app.use(fileUpload({
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB limit (adjust as needed)
-  abortOnLimit: true,
-  createParentPath: true
-}));
+app.use(
+  fileUpload({
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB limit (adjust as needed)
+    abortOnLimit: true,
+    createParentPath: true,
+  })
+);
 
 app.use(express.json({ limit: "50mb" }));
 
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
-
 
 // cloudinary
 cloudinary.config({
@@ -54,9 +55,10 @@ app.get("/", async (req, res) => {
   return res.send("app is workring completely fine");
 });
 
-const ARK_URL = 'https://ark.ap-southeast.bytepluses.com/api/v3/images/generations';
+const ARK_URL =
+  "https://ark.ap-southeast.bytepluses.com/api/v3/images/generations";
 const ARK_KEY = process.env.ARK_API_KEY;
-if (!ARK_KEY) console.warn('ARK_API_KEY not set in .env');
+if (!ARK_KEY) console.warn("ARK_API_KEY not set in .env");
 
 // POST API for image generation
 app.post("/imageGenerationByPrompt", async (req, res) => {
@@ -102,7 +104,7 @@ app.post("/imageGenerationByPrompt", async (req, res) => {
     });
   }
 });
- 
+
 app.get("/genImage", async (req, res) => {
   try {
     return res.sendFile(path.join(__dirname, "genImage.html"));
@@ -118,7 +120,6 @@ app.get("/variation", async (req, res) => {
     return res.status(500).json({ status: false });
   }
 });
-
 
 /* 
 function findFirstUrl(obj) {
@@ -220,7 +221,7 @@ app.post("/imageToImageGeneration", async (req, res) => {
     });
   }
 }); 
-*/ 
+*/
 
 app.get("/imageToImage", async (req, res) => {
   try {
@@ -230,17 +231,15 @@ app.get("/imageToImage", async (req, res) => {
   }
 });
 
-
-
-
-const admin = require("./routing/adminRouting"); 
+const admin = require("./routing/adminRouting");
 
 const routing = require("./routing/routing");
-
+const suppliers = require("./routing/suppliersRouting");
 app.use("/", routing);
 
 app.use("/", admin);
 
+app.use("/", suppliers);
 const port = process.env.PORT;
 
 app.listen(port, () => {
