@@ -305,7 +305,8 @@ exports.verifyRechargePayment = async (req, res) => {
 exports.rechargeHistory = async (req, res) => {
   try {
     const history = await useAiRechargeHistoryModel.find({
-      userId: req.user._id,isPaymentVerified:true
+      userId: req.user._id,
+      isPaymentVerified: true,
     });
 
     return res.status(200).json({

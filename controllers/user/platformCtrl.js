@@ -197,10 +197,16 @@ exports.signInWithGoogle = async (req, res) => {
       { new: true }
     );
 
-    const checkWallet = await userAIWalletModel.findOne({ userId: user._id });
+    const checkWallet = await userAIWalletModel.findOne({ userId:user._id });
+
+    console.log("checkWallet", checkWallet)
 
     if (!checkWallet) {
-      await userAIWalletModel.create({ userId: user._id, credit: 0 });
+     let dd = await userAIWalletModel.create({ userId:user._id, credit: 0 });
+
+     console.log("created Wallet",dd)
+
+
     }
 
     // let updatefcm;
