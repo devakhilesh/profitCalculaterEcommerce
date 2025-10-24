@@ -24,9 +24,8 @@ router.route("/recharge/wallet").get(authentication, getWalletData);
 
 module.exports = router;
 
+
 /* 
-
-
 _*base + /user/ai*_    *static*
 
  get all recharge plan  *get*

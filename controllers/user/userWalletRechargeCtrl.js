@@ -305,7 +305,7 @@ exports.verifyRechargePayment = async (req, res) => {
 exports.rechargeHistory = async (req, res) => {
   try {
     const history = await useAiRechargeHistoryModel.find({
-      userId: req.user._id,
+      userId: req.user._id,isPaymentVerified:true
     });
 
     return res.status(200).json({
@@ -331,7 +331,6 @@ exports.getWalletData = async (req, res) => {
         .status(400)
         .json({ status: false, message: "RE Log in required" });
     }
-
     return res
       .status(200)
       .json({ status: true, message: "wallet amount", data: walletData });
