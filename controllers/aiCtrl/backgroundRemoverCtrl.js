@@ -1,6 +1,9 @@
 const BackgroundRemoverModel = require("../../models/aiModels/bgRemoverModel");
-const { uploadSingleImageBackgroundRemover, deleteSingleImage } = require("../../utils/backgroundRemover");
-
+const userAIWalletModel = require("../../models/userModel/userWalletModel");
+const {
+  uploadSingleImageBackgroundRemover,
+  deleteSingleImage,
+} = require("../../utils/backgroundRemover");
 
 /* 
 
@@ -17,6 +20,23 @@ exports.removeBackground = async (req, res) => {
     if (!req.user || !req.user._id) {
       return res.status(401).json({ status: false, message: "Unauthorized" });
     }
+
+    const wallet = await userAIWalletModel.findOne({ userId: req.user._id });
+
+    if (!wallet) {
+      return res
+        .status(404)
+        .json({ status: false, message: "Not Found Wallet" });
+    }
+
+    if (wallet.credit < 1) {
+      return res.status(400).json({
+        status: false,
+        message:
+          "Insufficient Balance Recharge Now wallet should have more than 1 credit to use this service",
+      });
+    }
+
     let data = req.body;
 
     let userId = req.user._id;
@@ -59,6 +79,23 @@ exports.removeBackground = async (req, res) => {
         .json({ status: false, message: "Failed to save image data" });
     }
 
+        // update wallet credit by -1 for each call
+        const updatedWallet = await userAIWalletModel.findOneAndUpdate(
+          { userId: req.user._id, credit: { $gte: 1 } },
+          { $inc: { credit: -1 } },
+          { new: true }
+        );
+
+        if (!updatedWallet) {
+      return res.status(409).json({
+        status: false,
+        message:
+          "Unable to deduct credit: insufficient balance (race condition). Please try again after recharge or try once more.",
+      });
+    }
+
+
+
     return res.status(201).json({
       status: true,
       message: "image saved successfully",
@@ -68,6 +105,7 @@ exports.removeBackground = async (req, res) => {
     return res.status(500).json({ status: false, message: err.message });
   }
 };
+
 
 // Get all background removed images for a user
 exports.getAllBackgroundRemovedImages = async (req, res) => {

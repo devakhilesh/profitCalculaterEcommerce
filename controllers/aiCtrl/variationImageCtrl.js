@@ -2,6 +2,7 @@ const axios = require("axios");
 const {
   imageUrlToImageStoreCloudinary,
 } = require("../../utils/backgroundRemover");
+const userAIWalletModel = require("../../models/userModel/userWalletModel");
 
 const ARK_URL =
   "https://ark.ap-southeast.bytepluses.com/api/v3/images/generations";
@@ -11,8 +12,26 @@ if (!ARK_KEY) console.warn("ARK_API_KEY not set in .env");
 
 exports.imgToimgVariations = async (req, res) => {
   try {
-    // Prefer uploaded file if provided
-    // Use optional chaining / defensive reads so we don't try to access .image on undefined
+    if (!req.user || !req.user._id) {
+      return res.status(400).json({ status: false, message: "Re -LogIn" });
+    }
+
+    const wallet = await userAIWalletModel.findOne({ userId: req.user._id });
+
+    if (!wallet) {
+      return res
+        .status(404)
+        .json({ status: false, message: "Not Found Wallet" });
+    }
+
+    if (wallet.credit < 2) {
+      return res.status(400).json({
+        status: false,
+        message:
+          "Insufficient Balance Recharge Now wallet should have more than 2 credit to use this service",
+      });
+    }
+
     let imageField = req.body?.image || null;
 
     if (req.files && req.files.imageFile) {
@@ -122,6 +141,21 @@ exports.imgToimgVariations = async (req, res) => {
         success: false,
         error: "No image URLs found in ARK response.",
         raw: arkResp.data,
+      });
+    }
+
+    // update wallet credit by -2 for each call
+    const updatedWallet = await userAIWalletModel.findOneAndUpdate(
+      { userId: req.user._id, credit: { $gte: 2 } },
+      { $inc: { credit: -2 } },
+      { new: true }
+    );
+
+    if (!updatedWallet) {
+      return res.status(409).json({
+        status: false,
+        message:
+          "Unable to deduct credit: insufficient balance (race condition). Please try again after recharge or try once more.",
       });
     }
 

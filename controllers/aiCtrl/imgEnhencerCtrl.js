@@ -6,6 +6,7 @@ const {
 } = require("../../utils/backgroundRemover");
 const { Readable } = require("stream");
 const ImageEnhancerModel = require("../../models/aiModels/imageEnhencerModel");
+const userAIWalletModel = require("../../models/userModel/userWalletModel");
 const ARK_URL =
   "https://ark.ap-southeast.bytepluses.com/api/v3/images/generations";
 const ARK_KEY = process.env.ARK_API_KEY;
@@ -13,11 +14,25 @@ if (!ARK_KEY) console.warn("ARK_API_KEY not set in .env");
 
 exports.imgToimgEnhancer = async (req, res) => {
   try {
-    // console.log("=== imgToimgEnhancer called ===");
-    // console.log("req.is(multipart):", req.is("multipart/form-data"));
-    // console.log("req.headers['content-type']:", req.headers && req.headers['content-type']);
-    // console.log("req.files (raw):", req.files);
-    // console.log("req.body (raw):", req.body);
+    if (!req.user || !req.user._id) {
+      return res.status(400).json({ status: false, message: "Re -LogIn" });
+    }
+
+    const wallet = await userAIWalletModel.findOne({ userId: req.user._id });
+
+    if (!wallet) {
+      return res
+        .status(404)
+        .json({ status: false, message: "Not Found Wallet" });
+    }
+
+    if (wallet.credit < 1) {
+      return res.status(400).json({
+        status: false,
+        message:
+          "Insufficient Balance Recharge Now wallet should have more than 1 credit to use this service",
+      });
+    }
 
     let prompt = req.body?.prompt;
     if (!prompt) {
@@ -71,20 +86,32 @@ exports.imgToimgEnhancer = async (req, res) => {
 
     const maybeUrl = findFirstUrl(arkResp.data) || null;
 
-    const resp = {
-      prompt,
-      //   imageProvided: imageField.startsWith("data:")
-      //     ? "[base64-data]"
-      //     : imageField,
-      extractedUrl: maybeUrl,
-      raw: arkResp.data,
-    };
-
     if (!maybeUrl) {
       return res.status(400).json({
         status: false,
         message:
           "Something wents wrong while Trying to enhance this Image Try After Sometime",
+      });
+    }
+
+    const resp = {
+      prompt,
+      extractedUrl: maybeUrl,
+      raw: arkResp.data,
+    };
+
+    // update wallet credit by -1 for each call
+    const updatedWallet = await userAIWalletModel.findOneAndUpdate(
+      { userId: req.user._id, credit: { $gte: 1 } },
+      { $inc: { credit: -1 } },
+      { new: true }
+    );
+
+    if (!updatedWallet) {
+      return res.status(409).json({
+        status: false,
+        message:
+          "Unable to deduct credit: insufficient balance (race condition). Please try again after recharge or try once more.",
       });
     }
 
