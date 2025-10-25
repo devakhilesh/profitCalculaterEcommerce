@@ -2,6 +2,74 @@ const cloudinary = require("cloudinary").v2;
 const axios = require("axios");
 const { Readable } = require("stream");
 
+
+
+
+// multiple image upload
+exports.uploadProductImages = async (images, folderName) => {
+  let imgUrl = [];
+  for (let i = 0; i < images.length; i++) {
+    let result = await cloudinary.uploader.upload(images[i].tempFilePath, {
+      folder: folderName,
+    });
+    imgUrl.push({
+      public_id: result.public_id,
+      url: result.secure_url,
+    });
+  }
+  return imgUrl;
+};
+
+// multiple image destory from resource
+
+exports.destroyProductImages = async (images) => {
+  if (images.length == 0) {
+    return {
+      status: true,
+      message:
+        "No image to delete true to handle a senario when previos image not available",
+    };
+  }
+  let deletedResults = [];
+
+  for (let i = 0; i < images.length; i++) {
+    try {
+      if (images[i].public_id) {
+        let result = await cloudinary.uploader.destroy(images[i].public_id);
+
+        if (result.result === "ok") {
+          deletedResults.push({
+            public_id: images[i].public_id,
+            status: "deleted",
+          });
+        } else {
+          deletedResults.push({
+            public_id: images[i].public_id,
+            status: "failed",
+            message: "Failed to delete image from resource",
+          });
+        }
+      }
+    } catch (error) {
+      deletedResults.push({
+        public_id: images[i].public_id,
+        status: "error",
+        message: error.message,
+      });
+    }
+  }
+
+  return {
+    status: true,
+    message: "Image deletion process complete",
+    data: deletedResults,
+  };
+};
+
+
+
+
+
 /**
  * Upload an image, create an eager derived version with background removal,
  * and return the public_id and url of the derived (BG removed) image when available.

@@ -1,8 +1,8 @@
-const express = require("express")
+const express = require("express");
 
-const sup = express()
-const suppliersDetailsRoute = require("../routes/supplier/supplierDetails")
+const sup = express();
+const suppliersDetailsRoute = require("../routes/supplier/supplierDetails");
 
-sup.use("/suppliers/details",suppliersDetailsRoute)
+sup.use("/suppliers/details", suppliersDetailsRoute);
 
-module.exports = sup
+module.exports = sup;

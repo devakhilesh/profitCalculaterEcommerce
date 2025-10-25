@@ -121,6 +121,44 @@ app.get("/variation", async (req, res) => {
   }
 });
 
+
+
+
+// unplash 
+
+app.get("/unplashImage", async (req, res) => {
+  try {
+    return res.sendFile(path.join(__dirname, "unplash.html"));
+  } catch (err) {
+    return res.status(500).json({ status: false });
+  }
+});
+
+
+app.get("/unsplash", async (req, res) => {
+  try {
+    const { query = "nature", per_page = 5, page = 1 } = req.query;
+
+    const response = await axios.get("https://api.unsplash.com/search/photos", {
+      params: { query, per_page, page },
+      headers: {
+        Authorization: `Client-ID ${process.env.UNSPLASH_ACCESS_KEY}`,
+      },
+    });
+
+    res.json({
+      success: true,
+      total: response.data.total,
+      results: response.data.results,
+    });
+  } catch (error) {
+    console.error("Unsplash API error:", error.message);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+
+ 
 /* 
 function findFirstUrl(obj) {
   const urlRegex = /https?:\/\/[^\s'"]+/;
